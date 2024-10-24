@@ -18,6 +18,18 @@
                         <span class="nxl-mtext">Dashboard</span>
                     </a>
                 </li>
+                <li class="nxl-item {{ request()->routeIs(['category.*']) ? 'active' : '' }}">
+                    <a href="{{ route('category.index') }}" class="nxl-link">
+                        <span class="nxl-micon"><i class="feather-archive"></i></span>
+                        <span class="nxl-mtext">Kategori</span>
+                    </a>
+                </li>
+                <li class="nxl-item {{ request()->routeIs(['dashboard.*']) ? 'active' : '' }}">
+                    <a href="{{ route('dashboard.index') }}" class="nxl-link">
+                        <span class="nxl-micon"><i class="feather-server"></i></span>
+                        <span class="nxl-mtext">Proyek</span>
+                    </a>
+                </li>
                 <li class="nxl-item {{ request()->routeIs(['profile.*']) ? 'active' : '' }}">
                     <a href="{{ route('profile.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-settings"></i></span>

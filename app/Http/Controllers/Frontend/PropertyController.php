@@ -11,4 +11,9 @@ class PropertyController extends Controller
     {
         return view('frontend.property.index');
     }
+
+    public function detail()
+    {
+        return view('frontend.property.detail');
+    }
 }

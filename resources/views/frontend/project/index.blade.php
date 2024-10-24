@@ -30,10 +30,12 @@
             <div class="row gy-4">
                 <div class="col-md-4 col-sm-6 col-xs-6">
                     <div class="project-page-thumb">
-                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img1.png" alt="" class="cover-img">
+                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img1.png" alt=""
+                            class="cover-img">
                         <div class="project-page-content">
                             <h6 class="project-page-content__title">
-                                <a href="project-details.html" class="link">Where Innovation Meets Interior Design</a>
+                                <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets Interior
+                                    Design</a>
                             </h6>
                         </div>
                     </div>
@@ -42,10 +44,12 @@
                     <div class="row gy-4">
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img2.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img2.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>
@@ -53,10 +57,12 @@
                         </div>
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img3.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img3.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>
@@ -66,10 +72,12 @@
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-6">
                     <div class="project-page-thumb">
-                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img4.png" alt="" class="cover-img">
+                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img4.png" alt=""
+                            class="cover-img">
                         <div class="project-page-content">
                             <h6 class="project-page-content__title">
-                                <a href="project-details.html" class="link">Where Innovation Meets Interior Design</a>
+                                <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets Interior
+                                    Design</a>
                             </h6>
                         </div>
                     </div>
@@ -78,10 +86,12 @@
                     <div class="row gy-4">
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img5.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img5.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>
@@ -89,10 +99,12 @@
                         </div>
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img6.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img6.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>
@@ -102,10 +114,12 @@
                 </div>
                 <div class="col-md-4 col-sm-6 col-xs-6">
                     <div class="project-page-thumb">
-                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img1.png" alt="" class="cover-img">
+                        <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img1.png" alt=""
+                            class="cover-img">
                         <div class="project-page-content">
                             <h6 class="project-page-content__title">
-                                <a href="project-details.html" class="link">Where Innovation Meets Interior Design</a>
+                                <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets Interior
+                                    Design</a>
                             </h6>
                         </div>
                     </div>
@@ -114,10 +128,12 @@
                     <div class="row gy-4">
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img2.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img2.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>
@@ -125,10 +141,12 @@
                         </div>
                         <div class="col-12">
                             <div class="project-page-thumb">
-                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img3.png" alt="" class="cover-img">
+                                <img src="{{ asset('frontend/assets') }}/images/thumbs/project-img3.png" alt=""
+                                    class="cover-img">
                                 <div class="project-page-content">
                                     <h6 class="project-page-content__title">
-                                        <a href="project-details.html" class="link">Where Innovation Meets Interior
+                                        <a href="{{ route('project-ngp.detail') }}" class="link">Where Innovation Meets
+                                            Interior
                                             Design</a>
                                     </h6>
                                 </div>

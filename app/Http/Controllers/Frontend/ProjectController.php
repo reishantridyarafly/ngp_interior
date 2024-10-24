@@ -11,4 +11,9 @@ class ProjectController extends Controller
     {
         return view('frontend.project.index');
     }
+
+    public function detail()
+    {
+        return view('frontend.project.detail');
+    }
 }

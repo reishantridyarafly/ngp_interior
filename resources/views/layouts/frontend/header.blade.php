@@ -5,7 +5,8 @@
             <!-- Logo Start -->
             <div class="logo">
                 <a href="index.html" class="link">
-                    <img src="{{ asset('frontend/assets') }}/images/logo/{{ request()->routeIs(['beranda.*']) ? 'logo.png' : 'white-logo.png' }}" alt="Logo">
+                    <img src="{{ asset('frontend/assets') }}/images/logo/{{ request()->routeIs(['beranda.*']) ? 'logo.png' : 'white-logo.png' }}"
+                        alt="Logo">
                 </a>
             </div>
             <!-- Logo End -->
@@ -20,7 +21,7 @@
                         <a href="{{ route('about.index') }}" class="nav-menu__link">Tentang</a>
                     </li>
                     <li class="nav-menu__item">
-                        <a href="{{ route('project.index') }}" class="nav-menu__link">Proyek</a>
+                        <a href="{{ route('project-ngp.index') }}" class="nav-menu__link">Proyek</a>
                     </li>
                     <li class="nav-menu__item">
                         <a href="{{ route('property.index') }}" class="nav-menu__link">Properti</a>
@@ -31,19 +32,27 @@
                     <li class="nav-menu__item">
                         <a href="{{ route('contact.index') }}" class="nav-menu__link">Kontak</a>
                     </li>
+                    @auth
+                        <li class="nav-menu__item">
+                            <a href="{{ route('profile.index') }}" class="nav-menu__link">Hi,
+                                {{ auth()->user()->first_name }}</a>
+                        </li>
+                    @endauth
                 </ul>
             </div>
             <!-- Menu End  -->
 
             <!-- Header Right start -->
             <div class="header-right flx-align">
-                <a href="{{ route('login') }}"
-                    class="btn d-lg-block d-none {{ request()->routeIs(['beranda.*']) ? 'btn-main' : 'btn-outline-main btn-outline-main-dark' }}">
-                    Masuk / Daftar
-                    <span class="icon-right icon">
-                        <i class="fas fa-arrow-right"></i>
-                    </span>
-                </a>
+                @guest
+                    <a href="{{ route('login') }}"
+                        class="btn d-lg-block d-none {{ request()->routeIs(['beranda.*']) ? 'btn-main' : 'btn-outline-main btn-outline-main-dark' }}">
+                        Masuk / Daftar
+                        <span class="icon-right icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </a>
+                @endguest
                 <button type="button" class="toggle-mobileMenu d-lg-none ms-3"> <i class="las la-bars"></i>
                 </button>
             </div>
