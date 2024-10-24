@@ -272,11 +272,14 @@
 <script src="{{ asset('backend/assets') }}/vendors/js/circle-progress.min.js"></script>
 <script src="{{ asset('backend/assets') }}/vendors/js/dataTables.min.js"></script>
 <script src="{{ asset('backend/assets') }}/vendors/js/dataTables.bs5.min.js"></script>
+<script src="{{ asset('backend/assets') }}/vendors/js/select2.min.js"></script>
+<script src="{{ asset('backend/assets') }}/vendors/js/select2-active.min.js"></script>
 <!--! END: Vendors JS !-->
 <!--! BEGIN: Apps Init  !-->
 <script src="{{ asset('backend/assets') }}/js/common-init.min.js"></script>
 <script src="{{ asset('backend/assets') }}/js/analytics-init.min.js"></script>
 <script src="{{ asset('backend/assets') }}/js/leads-init.min.js"></script>
+<script src="{{ asset('backend/assets') }}/js/projects-init.min.js"></script>
 <!--! END: Apps Init !-->
 <!--! BEGIN: Theme Customizer  !-->
 <script src="{{ asset('backend/assets') }}/js/theme-customizer-init.min.js"></script>

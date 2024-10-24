@@ -16,9 +16,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
 
     Route::get('/proyek', [App\Http\Controllers\Backend\ProjectController::class, 'index'])->name('project.index');
+    Route::get('/proyek/tambah', [App\Http\Controllers\Backend\ProjectController::class, 'create'])->name('project.create');
     Route::post('/proyek', [App\Http\Controllers\Backend\ProjectController::class, 'store'])->name('project.store');
     Route::post('/proyek/updateStatus', [App\Http\Controllers\Backend\ProjectController::class, 'updateStatus'])->name('project.updateStatus');
     Route::get('/proyek/{id}/edit', [App\Http\Controllers\Backend\ProjectController::class, 'edit'])->name('project.edit');
+    Route::post('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'update'])->name('project.update');
     Route::delete('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'destroy'])->name('project.destroy');
 
     Route::get('/profile', [App\Http\Controllers\Backend\ProfileController::class, 'index'])->name('profile.index');

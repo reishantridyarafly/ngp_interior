@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class Category extends Model
+class Project extends Model
 {
     use HasFactory;
 
@@ -34,8 +34,8 @@ class Category extends Model
         return 'string';
     }
 
-    public function projects()
+    public function category()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsTo(Category::class);
     }
 }

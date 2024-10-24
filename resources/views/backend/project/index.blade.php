@@ -1,5 +1,5 @@
 @extends('layouts.backend.main')
-@section('title', 'Kategori')
+@section('title', 'Proyek')
 @section('content')
     <main class="nxl-container">
         <div class="nxl-content">
@@ -23,10 +23,10 @@
                             </a>
                         </div>
                         <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                            <button class="btn btn-primary" id="btnAdd">
+                            <a href="{{ route('project.create') }}" class="btn btn-primary" id="btnAdd">
                                 <i class="feather-plus me-2"></i>
                                 <span>Tambah @yield('title')</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     <div class="d-md-none d-flex align-items-center">
@@ -49,6 +49,10 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Nama</th>
+                                                <th>Kategori</th>
+                                                <th>Harga</th>
+                                                <th>Pelanggan</th>
+                                                <th>Status</th>
                                                 <th class="text-end">Aksi</th>
                                             </tr>
                                         </thead>
@@ -64,33 +68,6 @@
             <!-- [ Main Content ] end -->
         </div>
     </main>
-
-    <!-- modal -->
-    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form id="form">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modalLabel"></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <input type="hidden" name="id" id="id">
-                            <label for="name" class="form-label">Nama Kategori <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" id="name" name="name" class="form-control" autofocus>
-                            <small class="text-danger errorName"></small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" id="simpan">Simpan</button>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 @endsection
 
 @section('script')
@@ -105,7 +82,7 @@
             $('#datatable').DataTable({
                 processing: true,
                 serverside: true,
-                ajax: "{{ route('category.index') }}",
+                ajax: "{{ route('project.index') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -117,126 +94,31 @@
                         name: 'name'
                     },
                     {
+                        data: 'category',
+                        name: 'category'
+                    },
+                    {
+                        data: 'price',
+                        name: 'price'
+                    },
+                    {
+                        data: 'customer_name',
+                        name: 'customer_name'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                    {
                         data: 'action',
                         name: 'action'
                     }
-                ]
-            });
-
-            $('#btnAdd').click(function() {
-                $('#id').val('');
-                $('#modalLabel').html("Tambah Kategori");
-                $('#modal').modal('show');
-                $('#form').trigger("reset");
-
-                $('#name').removeClass('is-invalid');
-                $('.errorName').html('');
-            });
-
-            $('body').on('click', '#btnEdit', function() {
-                let id = $(this).data('id');
-                $.ajax({
-                    type: "GET",
-                    url: "kategori/" + id + "/edit",
-                    dataType: "json",
-                    success: function(response) {
-                        $('#modalLabel').html("Edit Kategori");
-                        $('#simpan').val("edit-kategori");
-                        $('#modal').modal('show');
-
-                        $('#name').removeClass('is-invalid');
-                        $('.errorName').html('');
-
-                        $('#id').val(response.id);
-                        $('#name').val(response.name);
-                    }
-                });
-            })
-
-            $('#form').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    data: $(this).serialize(),
-                    url: "{{ route('category.store') }}",
-                    type: "POST",
-                    dataType: 'json',
-
-                    beforeSend: function() {
-                        $('#simpan').attr('disable', 'disabled');
-                        $('#simpan').text('Proses...');
-                    },
-                    complete: function() {
-                        $('#simpan').removeAttr('disable');
-                        $('#simpan').html('Simpan');
-                    },
-                    success: function(response) {
-                        if (response.errors) {
-                            if (response.errors.image) {
-                                $('#image').addClass('is-invalid');
-                                $('.errorImage').html(response.errors.image);
-                            } else {
-                                $('#image').removeClass('is-invalid');
-                                $('.errorImage').html('');
-                            }
-
-                            if (response.errors.name) {
-                                $('#name').addClass('is-invalid');
-                                $('.errorName').html(response.errors.name);
-                            } else {
-                                $('#name').removeClass('is-invalid');
-                                $('.errorName').html('');
-                            }
-                        } else {
-                            $('#modal').modal('hide');
-                            $('#form').trigger("reset");
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal
-                                        .stopTimer;
-                                    toast.onmouseleave = Swal
-                                        .resumeTimer;
-                                }
-                            });
-                            Toast.fire({
-                                icon: "success",
-                                title: response.message
-                            });
-                            $('#datatable').DataTable().ajax.reload()
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-
-                        let errorMessage = "";
-                        if (xhr.status === 0) {
-                            errorMessage =
-                                "Network error, please check your internet connection.";
-                        } else if (xhr.status >= 400 && xhr.status < 500) {
-                            errorMessage = "Client error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else if (xhr.status >= 500) {
-                            errorMessage = "Server error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else {
-                            errorMessage = "Unexpected error: " + xhr.responseText;
-                        }
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error " + xhr.status,
-                            html: `
-                                <strong>Status:</strong> ${xhr.status}<br>
-                                <strong>Error:</strong> ${thrownError}<br>
-                            `,
-                        });
-                    }
-                });
+                ],
+                drawCallback: function(settings) {
+                    $('select[data-select2-selector="status"]').select2({
+                        width: 'resolve'
+                    });
+                }
             });
 
             $('body').on('click', '#btnDelete', function() {
@@ -254,7 +136,7 @@
                     if (result.value) {
                         $.ajax({
                             type: "DELETE",
-                            url: "{{ url('kategori/" + id + "') }}",
+                            url: "{{ url('proyek/"+id+"') }}",
                             data: {
                                 id: id
                             },
@@ -282,10 +164,6 @@
                                 }
                             },
                             error: function(xhr, ajaxOptions, thrownError) {
-                                console.error(xhr.status + "\n" + xhr.responseText +
-                                    "\n" +
-                                    thrownError);
-
                                 let errorMessage = "";
                                 if (xhr.status === 0) {
                                     errorMessage =
@@ -311,12 +189,53 @@
                                 <strong>Error:</strong> ${thrownError}<br>
                             `,
                                 });
+
+                                console.error(xhr.status + "\n" + xhr.responseText +
+                                    "\n" +
+                                    thrownError);
                             }
                         })
                     }
                 })
             })
+        });
 
+        $('body').on('change', '.select-status', function() {
+            let id = $(this).data('id');
+            let status = $(this).val();
+
+            $.ajax({
+                url: "{{ route('project.updateStatus') }}",
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: status
+                },
+                success: function(response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal
+                                .stopTimer;
+                            toast.onmouseleave = Swal
+                                .resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Data berhasil disimpan."
+                    });
+                    $('#datatable').DataTable().ajax.reload();
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                        thrownError);
+                }
+            });
         });
     </script>
 @endsection
