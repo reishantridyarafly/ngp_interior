@@ -8,7 +8,7 @@
     <!-- Title -->
     <title>@yield('title') || {{ config('app.name') }}</title>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('frontend/assets') }}/images/logo/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('backend/assets') }}/images/logo_ngp_2.png">
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{ asset('frontend/assets') }}/css/bootstrap.min.css">

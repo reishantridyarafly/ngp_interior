@@ -7,7 +7,7 @@
                 <div class="card mb-4 mt-5 mx-4 mx-sm-0 position-relative">
                     <div
                         class="wd-50 bg-white p-2 rounded-circle shadow-lg position-absolute translate-middle top-0 start-50">
-                        <img src="{{ asset('backend/assets') }}/images/logo-abbr.png" alt="Logo - {{ config('app.name') }}"
+                        <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" alt="Logo - {{ config('app.name') }}"
                             class="img-fluid">
                     </div>
                     <div class="card-body p-sm-5">
