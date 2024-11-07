@@ -3,7 +3,8 @@
         <div class="m-header">
             <a href="index.html" class="b-brand">
                 <!-- ========   change your logo hear   ============ -->
-                <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" style="width: 25%" alt="" class="logo logo-lg">
+                <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" style="width: 25%" alt=""
+                    class="logo logo-lg">
                 <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" alt="" class="logo logo-sm">
             </a>
         </div>
@@ -22,6 +23,12 @@
                     <a href="{{ route('category.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-archive"></i></span>
                         <span class="nxl-mtext">Kategori</span>
+                    </a>
+                </li>
+                <li class="nxl-item {{ request()->routeIs(['customers.*']) ? 'active' : '' }}">
+                    <a href="{{ route('customers.index') }}" class="nxl-link">
+                        <span class="nxl-micon"><i class="feather-users"></i></span>
+                        <span class="nxl-mtext">Pelanggan</span>
                     </a>
                 </li>
                 <li class="nxl-item {{ request()->routeIs(['project.*']) ? 'active' : '' }}">
