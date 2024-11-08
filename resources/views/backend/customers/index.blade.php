@@ -82,7 +82,8 @@
                             <div class="col-6">
                                 <div class="mb-3">
                                     <input type="hidden" name="id" id="id">
-                                    <label for="first_name" class="form-label">Nama Depan</label>
+                                    <label for="first_name" class="form-label">Nama Depan <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" id="first_name" name="first_name" class="form-control" autofocus>
                                     <div class="invalid-feedback errorFirstName"></div>
                                 </div>
@@ -91,17 +92,16 @@
                                 <div class="mb-3">
                                     <label for="last_name" class="form-label">Nama Belakang</label>
                                     <input type="text" id="last_name" name="last_name" class="form-control">
-                                    <div class="invalid-feedback errorLastName"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                             <input type="email" id="email" name="email" class="form-control">
                             <div class="invalid-feedback errorEmail"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="telephone" class="form-label">No Telepon</label>
+                            <label for="telephone" class="form-label">No Telepon <span class="text-danger">*</span></label>
                             <input type="number" id="telephone" name="telephone" class="form-control">
                             <div class="invalid-feedback errorTelephone"></div>
                         </div>
@@ -196,7 +196,6 @@
 
                         $('#id').val(response.id);
                         $('#first_name').val(response.first_name);
-                        $('#last_name').val(response.last_name);
                         $('#email').val(response.email);
                         $('#telephone').val(response.telephone);
                     }
@@ -222,23 +221,17 @@
                         if (response.errors) {
                             if (response.errors.first_name) {
                                 $('#first_name').addClass('is-invalid');
-                                $('.errorFirstName').html(response.errors.first_name);
+                                $('.errorFirstName').html(response.errors.first_name.join(
+                                    '<br>'));
                             } else {
                                 $('#first_name').removeClass('is-invalid');
                                 $('.errorFirstName').html('');
                             }
 
-                            if (response.errors.last_name) {
-                                $('#last_name').addClass('is-invalid');
-                                $('.errorLastName').html(response.errors.last_name);
-                            } else {
-                                $('#last_name').removeClass('is-invalid');
-                                $('.errorLastName').html('');
-                            }
-
                             if (response.errors.email) {
                                 $('#email').addClass('is-invalid');
-                                $('.errorEmail').html(response.errors.email);
+                                $('.errorEmail').html(response.errors.email.join(
+                                    '<br>'));
                             } else {
                                 $('#email').removeClass('is-invalid');
                                 $('.errorEmail').html('');
@@ -246,7 +239,8 @@
 
                             if (response.errors.telephone) {
                                 $('#telephone').addClass('is-invalid');
-                                $('.errorTelephone').html(response.errors.telephone);
+                                $('.errorTelephone').html(response.errors.telephone.join(
+                                    '<br>'));
                             } else {
                                 $('#telephone').removeClass('is-invalid');
                                 $('.errorTelephone').html('');

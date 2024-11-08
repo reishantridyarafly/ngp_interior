@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/pelanggan/updateStatus', [App\Http\Controllers\Backend\CustomersController::class, 'updateStatus'])->name('customers.updateStatus');
     Route::get('/pelanggan/{id}/edit', [App\Http\Controllers\Backend\CustomersController::class, 'edit'])->name('customers.edit');
     Route::delete('/pelanggan/{id}', [App\Http\Controllers\Backend\CustomersController::class, 'destroy'])->name('customers.destroy');
+
+    Route::get('/pemesanan/{id}/survei', [App\Http\Controllers\Backend\OrderController::class, 'survey'])->name('order.survey');
+    Route::post('/pemesanan/{id}/survei/store', [App\Http\Controllers\Backend\OrderController::class, 'survey_store'])->name('order.survey_store');
 });
 
 require __DIR__ . '/auth.php';

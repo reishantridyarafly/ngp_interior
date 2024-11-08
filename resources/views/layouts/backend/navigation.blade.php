@@ -25,7 +25,7 @@
                         <span class="nxl-mtext">Kategori</span>
                     </a>
                 </li>
-                <li class="nxl-item {{ request()->routeIs(['customers.*']) ? 'active' : '' }}">
+                <li class="nxl-item {{ request()->routeIs(['customers.*', 'order.*']) ? 'active' : '' }}">
                     <a href="{{ route('customers.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-users"></i></span>
                         <span class="nxl-mtext">Pelanggan</span>

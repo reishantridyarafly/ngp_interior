@@ -173,7 +173,8 @@
                         if (response.errors) {
                             if (response.errors.image) {
                                 $('#image').addClass('is-invalid');
-                                $('.errorImage').html(response.errors.image);
+                                $('.errorImage').html(response.errors.image.join(
+                                    '<br>'));
                             } else {
                                 $('#image').removeClass('is-invalid');
                                 $('.errorImage').html('');
@@ -181,7 +182,8 @@
 
                             if (response.errors.name) {
                                 $('#name').addClass('is-invalid');
-                                $('.errorName').html(response.errors.name);
+                                $('.errorName').html(response.errors.name.join(
+                                    '<br>'));
                             } else {
                                 $('#name').removeClass('is-invalid');
                                 $('.errorName').html('');
