@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('invoice');
             $table->uuid('user_id');
             $table->string('location', 100);
-            $table->dateTime('order_date');
-            $table->text('detail_survey');
+            $table->date('order_date');
+            $table->text('detail_survey')->nullable();
             $table->boolean('status_survey')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_design')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_approval')->default(0)->comment('0 = uncompleted, 1 = completed');

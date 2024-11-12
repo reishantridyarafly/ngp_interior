@@ -50,12 +50,6 @@ class CustomersController extends Controller
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="' . route('order.survey', $data->id) . '" class="dropdown-item">
-                                            <i class="feather feather-dollar-sign me-3"></i>
-                                            <span>Pemesanan</span>
-                                        </a>
-                                    </li>
-                                    <li>
                                         <button class="dropdown-item" id="btnEdit" data-id="' . $data->id . '">
                                             <i class="feather feather-edit-3 me-3"></i>
                                             <span>Edit</span>

@@ -4,51 +4,80 @@
             <div class="card-body">
                 <form id="form_survey">
                     <div class="mb-3">
-                        <input type="hidden" name="id_user" id="id_user" value="{{ $user->id }}">
-                        <label for="name" class="form-label">Nama Pelanggan</label>
+                        <input type="hidden" name="id" id="id" value="{{ $order->id }}">
+                        <label for="invoice" class="form-label">Invoice</label>
+                        <input type="text" id="invoice" name="invoice" class="form-control"
+                            value="{{ $order->invoice }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nama Pemesan</label>
                         <input type="text" id="name" name="name" class="form-control"
-                            value="{{ $user->first_name . ' ' . $user->last_name }}" readonly>
+                            value="{{ $user->first_name . ' ' . $user->last_name }}" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="telephone" class="form-label">No Telepon</label>
                         <input type="text" id="telephone" name="telephone" class="form-control"
-                            value="{{ $user->telephone }}" readonly>
+                            value="{{ $user->telephone }}" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="text" id="email" name="email" class="form-control"
-                            value="{{ $user->email }}" readonly>
+                            value="{{ $user->email }}" disabled>
                     </div>
                     <div class="mb-3">
                         <label for="location" class="form-label">Lokasi <span class="text-danger">*</span></label>
-                        <input type="text" id="location" name="location" class="form-control" autofocus>
-                        <small class="text-danger errorLocation"></small>
+                        <input type="text" id="location" name="location" class="form-control"
+                            value="{{ $order->location }}" disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="order_date" class="form-label">Tanggal Survei <span
+                        <label for="order_date" class="form-label">Tanggal Pemesanan <span
                                 class="text-danger">*</span></label>
-                        <input type="date" id="order_date" name="order_date" value="{{ now()->format('Y-m-d') }}"
-                            class="form-control">
+                        <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
+                            disabled class="form-control">
                         <small class="text-danger errorOrderDate"></small>
                     </div>
                     <div class="mb-3">
                         <label for="survey_photo" class="form-label">Foto Hasil Survei <span
                                 class="text-danger">*</span></label>
-                        <input type="file" id="survey_photo" name="survey_photo[]" class="form-control" accept="image/*"
-                            multiple>
-                        <small class="text-danger errorSurveyPhoto"></small>
+                        @if ($order->status_survey == 0)
+                            <input type="file" id="survey_photo" name="survey_photo[]" class="form-control"
+                                accept="image/*" multiple>
+                            <small class="text-danger errorSurveyPhoto"></small>
+                        @else
+                            <div class="row">
+                                @foreach ($order->survey_photos as $photo)
+                                    <div class="col-3 mb-4">
+                                        <a href="{{ route('file.private', $photo->photo_name) }}" target="_blank">
+                                            <img class="w-100" src="{{ route('file.private', $photo->photo_name) }}"
+                                                alt="{{ $photo->photo_name }}">
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                     <div class="mb-3">
                         <label for="detail_survey" class="form-label">Detail Survei <span
                                 class="text-danger">*</span></label>
-                        <textarea name="detail_survey" id="detail_survey" class="form-control"></textarea>
-                        <small class="text-danger errorDetailSurvey"></small>
+                        @if ($order->status_survey == 0)
+                            <textarea name="detail_survey" id="detail_survey" class="form-control"></textarea>
+                            <small class="text-danger errorDetailSurvey"></small>
+                        @else
+                            <div class="row">
+                                <div class="col-12">
+                                    {!! $order->detail_survey !!}
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
-                    <div class="col-lg-12 col-md-6">
-                        <div class="form-group mb-3 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary" id="save">Simpan</button>
+                    @if ($order->status_survey == 0)
+                        <div class="col-lg-12 col-md-6">
+                            <div class="form-group mb-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="save_survey">Simpan</button>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </form>
             </div>
         </div>
@@ -240,7 +269,6 @@
                 console.log(error);
             });
 
-
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -252,40 +280,22 @@
                 e.preventDefault();
                 $.ajax({
                     data: new FormData(this),
-                    url: "{{ route('order.survey_store', $user->id) }}",
+                    url: "{{ route('order.store_survey') }}",
                     type: "POST",
                     dataType: 'json',
                     processData: false,
                     contentType: false,
                     cache: false,
                     beforeSend: function() {
-                        $('#save').attr('disable', 'disabled');
-                        $('#save').text('Proses...');
+                        $('#save_survey').attr('disable', 'disabled');
+                        $('#save_survey').text('Proses...');
                     },
                     complete: function() {
-                        $('#simpan').removeAttr('disable');
-                        $('#save').text('Simpan');
+                        $('#save_survey').removeAttr('disable');
+                        $('#save_survey').text('Simpan');
                     },
                     success: function(response) {
                         if (response.errors) {
-                            if (response.errors.location) {
-                                $('#location').addClass('is-invalid');
-                                $('.errorLocation').html(response.errors.location.join(
-                                    '<br>'));
-                            } else {
-                                $('#location').removeClass('is-invalid');
-                                $('.errorLocation').html('');
-                            }
-
-                            if (response.errors.order_date) {
-                                $('#order_date').addClass('is-invalid');
-                                $('.errorOrderDate').html(response.errors.order_date.join(
-                                    '<br>'));
-                            } else {
-                                $('#order_date').removeClass('is-invalid');
-                                $('.errorOrderDate').html('');
-                            }
-
                             if (response.errors.survey_photo) {
                                 $('#survey_photo').addClass('is-invalid');
                                 $('.errorSurveyPhoto').html(response.errors.survey_photo.join(
@@ -309,7 +319,8 @@
                                 title: 'Sukses',
                                 text: response.success,
                             }).then(function() {
-                                top.location.href = "{{ route('order.survey', $user->id) }}";
+                                top.location.href =
+                                    "{{ route('order.index') }}";
                             });
                         }
                     },
@@ -332,9 +343,9 @@
                             icon: "error",
                             title: "Error " + xhr.status,
                             html: `
-                                <strong>Status:</strong> ${xhr.status}<br>
-                                <strong>Error:</strong> ${thrownError}<br>
-                            `,
+                            <strong>Status:</strong> ${xhr.status}<br>
+                            <strong>Error:</strong> ${thrownError}<br>
+                        `,
                         });
 
                         console.error(xhr.status + "\n" + xhr.responseText + "\n" +

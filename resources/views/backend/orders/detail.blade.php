@@ -1,5 +1,5 @@
 @extends('layouts.backend.main')
-@section('title', 'Survei')
+@section('title', 'Tambah Pemesanan')
 @section('content')
     <main class="nxl-container">
         <div class="nxl-content">
@@ -11,7 +11,7 @@
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('customers.index') }}">Pelanggan</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('order.index') }}">Pemesanan</a></li>
                         <li class="breadcrumb-item">@yield('title')</li>
                     </ul>
                 </div>
@@ -34,24 +34,43 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="nav-tabs-wrapper page-content-left-sidebar-wrapper">
                         <ul class="nav nav-tabs nav-tabs-custom-style" id="myTab" role="tablist">
+                            <!-- Tab Survei -->
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" data-bs-toggle="tab"
-                                    data-bs-target="#surveyTab">Survei</button>
+                                <button
+                                    class="nav-link {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#surveyTab">Survei</button>
                             </li>
+
+                            <!-- Tab Desain -->
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab">Desain</button>
+                                <button
+                                    class="nav-link {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#designTab"
+                                    {{ $order->status_survey == 0 ? 'disabled' : '' }}>Desain</button>
                             </li>
+
+                            <!-- Tab Persetujuan -->
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab"
-                                    data-bs-target="#timesheetsTab">Persetujuan</button>
+                                <button
+                                    class="nav-link {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#appropvalTab"
+                                    {{ $order->status_design == 0 ? 'disabled' : '' }}>Persetujuan</button>
                             </li>
+
+                            <!-- Tab Produksi -->
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab"
-                                    data-bs-target="#milestonesTab">Produksi</button>
+                                <button
+                                    class="nav-link {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#productionTab"
+                                    {{ $order->status_approval == 0 ? 'disabled' : '' }}>Produksi</button>
                             </li>
+
+                            <!-- Tab Instalasi -->
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" data-bs-toggle="tab"
-                                    data-bs-target="#discussionsTab">Instalasi</button>
+                                <button
+                                    class="nav-link {{ $order->status_production == 1 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#instalationTab"
+                                    {{ $order->status_production == 0 ? 'disabled' : '' }}>Instalasi</button>
                             </li>
                         </ul>
                     </div>
@@ -79,16 +98,19 @@
                 </div>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade active show" id="surveyTab">
-                        @include('backend.order.survey')
+                    <div class="tab-pane fade {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                        id="surveyTab">
+                        @include('backend.orders.subdetail.survey')
                     </div>
-                    <div class="tab-pane fade" id="activityTab">
+
+                    <div class="tab-pane fade {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                        id="designTab">
                         <div class="card stretch stretch-full">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-center"
                                     style="height: calc(100vh - 315px)">
                                     <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">No activity yet!</h2>
+                                        <h2 class="fs-16 fw-semibold">Design</h2>
                                         <p class="fs-12 text-muted">There is no activity on this project</p>
                                         <a href="javascript:void(0);"
                                             class="avatar-text bg-soft-primary text-primary mx-auto"
@@ -100,13 +122,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="timesheetsTab">
+
+                    <div class="tab-pane fade {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                        id="appropvalTab">
                         <div class="card stretch stretch-full">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-center"
                                     style="height: calc(100vh - 315px)">
                                     <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">No timesheets yet!</h2>
+                                        <h2 class="fs-16 fw-semibold">Approval!</h2>
                                         <p class="fs-12 text-muted">There is no timesheets on this project</p>
                                         <a href="javascript:void(0);"
                                             class="avatar-text bg-soft-primary text-primary mx-auto"
@@ -118,13 +142,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="milestonesTab">
+                    <div class="tab-pane fade {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                        id="productionTab">
                         <div class="card stretch stretch-full">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-center"
                                     style="height: calc(100vh - 315px)">
                                     <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">No milestones yet!</h2>
+                                        <h2 class="fs-16 fw-semibold">Production</h2>
                                         <p class="fs-12 text-muted">There is no milestones on this project</p>
                                         <a href="javascript:void(0);"
                                             class="avatar-text bg-soft-primary text-primary mx-auto"
@@ -136,13 +161,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="discussionsTab">
+
+                    <div class="tab-pane fade {{ $order->status_production == 1 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                        id="instalationTab">
                         <div class="card stretch stretch-full">
                             <div class="card-body">
                                 <div class="d-flex align-items-center justify-content-center"
                                     style="height: calc(100vh - 315px)">
                                     <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">No discussions yet!</h2>
+                                        <h2 class="fs-16 fw-semibold">Instaltion</h2>
                                         <p class="fs-12 text-muted">There is no discussions on this project</p>
                                         <a href="javascript:void(0);"
                                             class="avatar-text bg-soft-primary text-primary mx-auto"

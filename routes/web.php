@@ -1,6 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/file/private/{filename}', function ($filename) {
+    $path = 'uploads/survey/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.private');
 
 Route::get('/', [App\Http\Controllers\Frontend\BerandaController::class, 'index'])->name('beranda.index');
 Route::get('/tentang', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about.index');
@@ -41,8 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/pelanggan/{id}/edit', [App\Http\Controllers\Backend\CustomersController::class, 'edit'])->name('customers.edit');
     Route::delete('/pelanggan/{id}', [App\Http\Controllers\Backend\CustomersController::class, 'destroy'])->name('customers.destroy');
 
-    Route::get('/pemesanan/{id}/survei', [App\Http\Controllers\Backend\OrderController::class, 'survey'])->name('order.survey');
-    Route::post('/pemesanan/{id}/survei/store', [App\Http\Controllers\Backend\OrderController::class, 'survey_store'])->name('order.survey_store');
+    Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
+    Route::post('/pemesanan/tambah/pesanan', [App\Http\Controllers\Backend\OrderController::class, 'store_order'])->name('order.store_order');
+    Route::post('/pemesanan/tambah/survei', [App\Http\Controllers\Backend\OrderController::class, 'store_survey'])->name('order.store_survey');
+    Route::get('/pemesanan/{invoice}/detail', [App\Http\Controllers\Backend\OrderController::class, 'detail'])->name('order.detail');
 });
 
 require __DIR__ . '/auth.php';
