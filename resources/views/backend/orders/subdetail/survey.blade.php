@@ -1,40 +1,60 @@
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card stretch stretch-full">
-            <div class="card-body">
-                <form id="form_survey">
-                    <div class="mb-3">
-                        <input type="hidden" name="id" id="id" value="{{ $order->id }}">
-                        <label for="invoice" class="form-label">Invoice</label>
-                        <input type="text" id="invoice" name="invoice" class="form-control"
-                            value="{{ $order->invoice }}" disabled>
+<form id="form_survey">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card stretch stretch-full">
+                <div class="card-header">
+                    <h5 class="card-title">Hasil Survei</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <input type="hidden" name="id" id="id" value="{{ $order->id }}">
+                                <label for="invoice" class="form-label">Invoice</label>
+                                <input type="text" id="invoice" name="invoice" class="form-control"
+                                    value="{{ $order->invoice }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nama Pemesan</label>
+                                <input type="text" id="name" name="name" class="form-control"
+                                    value="{{ $user->first_name . ' ' . $user->last_name }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <label for="telephone" class="form-label">No Telepon</label>
+                                <input type="text" id="telephone" name="telephone" class="form-control"
+                                    value="{{ $user->telephone }}" disabled>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nama Pemesan</label>
-                        <input type="text" id="name" name="name" class="form-control"
-                            value="{{ $user->first_name . ' ' . $user->last_name }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="telephone" class="form-label">No Telepon</label>
-                        <input type="text" id="telephone" name="telephone" class="form-control"
-                            value="{{ $user->telephone }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" id="email" name="email" class="form-control"
-                            value="{{ $user->email }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="location" class="form-label">Lokasi <span class="text-danger">*</span></label>
-                        <input type="text" id="location" name="location" class="form-control"
-                            value="{{ $order->location }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="order_date" class="form-label">Tanggal Pemesanan <span
-                                class="text-danger">*</span></label>
-                        <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
-                            disabled class="form-control">
-                        <small class="text-danger errorOrderDate"></small>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="text" id="email" name="email" class="form-control"
+                                    value="{{ $user->email }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <label for="location" class="form-label">Lokasi <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" id="location" name="location" class="form-control"
+                                    value="{{ $order->location }}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="mb-3">
+                                <label for="order_date" class="form-label">Tanggal Pemesanan <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
+                                    disabled class="form-control">
+                                <small class="text-danger errorOrderDate"></small>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="survey_photo" class="form-label">Foto Hasil Survei <span
@@ -69,7 +89,6 @@
                                 </div>
                             </div>
                         @endif
-
                     </div>
                     @if ($order->status_survey == 0)
                         <div class="col-lg-12 col-md-6">
@@ -78,17 +97,430 @@
                             </div>
                         </div>
                     @endif
-                </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card stretch stretch-full">
+                <div class="card-header">
+                    <h5 class="card-title">Kebutuhan</h5>
+                    <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand"
+                        data-id="{{ $order->id }}">
+                        <i class="feather-plus me-2"></i>
+                        <span>Tambah Kebutuhan</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" width="1">#</th>
+                                <th scope="col">Nama Bagian</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($orderSections as $orderSection)
+                                <tr>
+                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $orderSection->section_title }}</td>
+                                    <td>{{ $orderSection->section_total ?? 0 }}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <button type="button" id="btnEditSection"
+                                                class="btn btn-sm btn-info me-2"
+                                                data-idsection="{{ $orderSection->id }}">Ubah
+                                                Bagian</button>
+                                            <button class="btn btn-sm btn-primary text-danger me-2"
+                                                data-idsection="{{ $orderSection->id }}" id="btnAddItems"
+                                                type="button">Tambah Item</button>
+                                            <button class="btn btn-sm bg-soft-danger text-danger"
+                                                data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
+                                                type="button">Hapus</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4">Data belum tersedia</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.10.5/autoNumeric.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/super-build/ckeditor.js"></script>
 
     <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var i = 1;
+            $("#add_row").click(function() {
+                b = i - 1;
+                $("#addr" + i)
+                    .html($("#addr" + b).html())
+                    .find("td:first-child")
+                    .html(i + 1);
+                $("#tab_logic").append('<tr id="addr' + (i + 1) + '"></tr>');
+                i++;
+            });
+
+            $("#delete_row").click(function() {
+                if (i > 1) {
+                    $("#addr" + (i - 1)).html("");
+                    i--;
+                }
+                calc();
+            });
+
+            $("#tab_logic tbody").on("keyup change", function() {
+                calc();
+            });
+
+            $("#tax").on("keyup change", function() {
+                calc_total();
+            });
+
+            $('#form_survey').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    data: new FormData(this),
+                    url: "{{ route('order.store_survey') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    beforeSend: function() {
+                        $('#save_survey').attr('disable', 'disabled');
+                        $('#save_survey').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#save_survey').removeAttr('disable');
+                        $('#save_survey').text('Simpan');
+                    },
+                    success: function(response) {
+                        if (response.errors) {
+                            if (response.errors.survey_photo) {
+                                $('#survey_photo').addClass('is-invalid');
+                                $('.errorSurveyPhoto').html(response.errors.survey_photo.join(
+                                    '<br>'));
+                            } else {
+                                $('#survey_photo').removeClass('is-invalid');
+                                $('.errorSurveyPhoto').html('');
+                            }
+
+                            if (response.errors.detail_survey) {
+                                $('#detail_survey').addClass('is-invalid');
+                                $('.errorDetailSurvey').html(response.errors.detail_survey.join(
+                                    '<br>'));
+                            } else {
+                                $('#detail_survey').removeClass('is-invalid');
+                                $('.errorDetailSurvey').html('');
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sukses',
+                                text: response.success,
+                            }).then(function() {
+                                top.location.href =
+                                    "{{ route('order.index') }}";
+                            });
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        let errorMessage = "";
+                        if (xhr.status === 0) {
+                            errorMessage =
+                                "Network error, please check your internet connection.";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = "Client error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = "Server error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else {
+                            errorMessage = "Unexpected error: " + xhr.responseText;
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error " + xhr.status,
+                            html: `
+                            <strong>Status:</strong> ${xhr.status}<br>
+                            <strong>Error:</strong> ${thrownError}<br>
+                        `,
+                        });
+
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
+
+            $('#btnAddSection').click(function() {
+                let id = $(this).data('id');
+                $('#id_order').val(id);
+                $('#modalLabelSection').html("Tambah Bagian");
+                $('#modalSection').modal('show');
+                $('#form_section').trigger("reset");
+
+                $('#name_section').removeClass('is-invalid');
+                $('.errorNameSection').html('');
+            });
+
+            $('body').on('click', '#btnEditSection', function() {
+                let id_section = $(this).data('idsection');
+                $.ajax({
+                    type: "GET",
+                    url: "/pemesanan/bagian/" + id_section + "/edit",
+                    dataType: "json",
+                    success: function(response) {
+                        $('#modalLabelSection').html("Edit Bagian");
+                        $('#save_section').val("edit-bagian");
+                        $('#modalSection').modal('show');
+
+                        $('#name_section').removeClass('is-invalid');
+                        $('.errorNameSection').html('');
+
+                        $('#id_section').val(id_section);
+                        $('#id_order').val(response.order_id);
+                        $('#name_section').val(response.section_title);
+                    }
+                });
+
+            });
+
+            $('#form_section').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    data: $(this).serialize(),
+                    url: "{{ route('order.store_section') }}",
+                    type: "POST",
+                    dataType: 'json',
+
+                    beforeSend: function() {
+                        $('#save_section').attr('disable', 'disabled');
+                        $('#save_section').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#save_section').removeAttr('disable');
+                        $('#save_section').html('Simpan');
+                    },
+                    success: function(response) {
+                        if (response.errors) {
+                            if (response.errors.name_section) {
+                                $('#name_section').addClass('is-invalid');
+                                $('.errorNameSection').html(response.errors.name_section.join(
+                                    '<br>'));
+                            } else {
+                                $('#name_section').removeClass('is-invalid');
+                                $('.errorNameSection').html('');
+                            }
+                        } else {
+                            $('#modalSection').modal('hide');
+                            $('#form_section').trigger("reset");
+                            let rowCount = $('table tbody tr').length + 1;
+                            if (!$('#id_section').val()) {
+                                let newRow = `
+                                <tr>
+                                    <th scope="row">${rowCount}</th>
+                                    <td>${response.orderSection.section_title}</td>
+                                    <td>${response.orderSection.section_total ?? 0}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <button type="button" class="btn btn-sm btn-info me-2" data-idsection="${response.orderSection.id}" id="btnEditSection">Ubah Bagian</button>
+                                            <button type="button" class="btn btn-sm btn-primary text-danger me-2">Tambah Item</button>
+                                            <button type="button" class="btn btn-sm bg-soft-danger text-danger" data-idsection="${response.orderSection.id}" id="btnDeleteSection">Hapus</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+                                $('table tbody').append(newRow);
+                            } else {
+                                let row = $("tr").filter(function() {
+                                    return $(this).find("button[data-idsection='" +
+                                        response.orderSection.id + "']").length > 0;
+                                });
+
+                                row.find("td").eq(0).text(response.orderSection
+                                    .section_title);
+                                row.find("td").eq(1).text(response.orderSection.section_total ??
+                                    0);
+                            }
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal
+                                        .stopTimer;
+                                    toast.onmouseleave = Swal
+                                        .resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                title: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+
+                        let errorMessage = "";
+                        if (xhr.status === 0) {
+                            errorMessage =
+                                "Network error, please check your internet connection.";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = "Client error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = "Server error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else {
+                            errorMessage = "Unexpected error: " + xhr.responseText;
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error " + xhr.status,
+                            html: `
+                                <strong>Status:</strong> ${xhr.status}<br>
+                                <strong>Error:</strong> ${thrownError}<br>
+                            `,
+                        });
+                    }
+                });
+            });
+
+            $('body').on('click', '#btnDeleteSection', function() {
+                let id = $(this).data('idsection');
+                Swal.fire({
+                    title: 'Hapus',
+                    text: "Apakah anda yakin?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: "/pemesanan/bagian/" + id,
+                            data: {
+                                id: id
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.message) {
+                                    $("tr").filter(function() {
+                                        return $(this).find(
+                                            "button[data-idsection='" + id +
+                                            "']").length > 0;
+                                    }).remove();
+
+                                    $('table tbody tr').each(function(index) {
+                                        $(this).find('th').text(index +
+                                            1);
+                                    });
+
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                    });
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: response.message
+                                    });
+                                }
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                console.error(xhr.status + "\n" + xhr.responseText +
+                                    "\n" + thrownError);
+
+                                let errorMessage = "";
+                                if (xhr.status === 0) {
+                                    errorMessage =
+                                        "Network error, please check your internet connection.";
+                                } else if (xhr.status >= 400 && xhr.status < 500) {
+                                    errorMessage = "Client error (" + xhr.status +
+                                        "): " + xhr.responseText;
+                                } else if (xhr.status >= 500) {
+                                    errorMessage = "Server error (" + xhr.status +
+                                        "): " + xhr.responseText;
+                                } else {
+                                    errorMessage = "Unexpected error: " + xhr
+                                        .responseText;
+                                }
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error " + xhr.status,
+                                    html: `<strong>Status:</strong> ${xhr.status}<br><strong>Error:</strong> ${thrownError}<br>`,
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            $('body').on('click', '#btnAddItems', function() {
+                let id_section = $(this).data('idsection');
+                $('#modalLabelItem').html("Tambah Bagian Item");
+                $('#modalItem').modal('show');
+                $('#form_item').trigger("reset");
+            });
+        });
+
+        function calc() {
+            $("#tab_logic tbody tr").each(function(i, element) {
+                var html = $(this).html();
+                if (html != "") {
+                    var qty = $(this).find(".qty").val();
+                    var price = $(this).find(".price").val();
+                    $(this)
+                        .find(".total")
+                        .val(qty * price);
+                    calc_total();
+                }
+            });
+        }
+
+        function calc_total() {
+            total = 0;
+            $(".total").each(function() {
+                total += parseInt($(this).val());
+            });
+            $("#sub_total").val(total.toFixed(2));
+            tax_sum = (total / 100) * $("#tax").val();
+            $("#tax_amount").val(tax_sum.toFixed(2));
+            $("#total_amount").val((tax_sum + total).toFixed(2));
+        }
+
         CKEDITOR.ClassicEditor.create(document.getElementById("detail_survey"), {
                 // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
                 toolbar: {
@@ -268,91 +700,5 @@
             .catch(error => {
                 console.log(error);
             });
-
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('#form_survey').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    data: new FormData(this),
-                    url: "{{ route('order.store_survey') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    beforeSend: function() {
-                        $('#save_survey').attr('disable', 'disabled');
-                        $('#save_survey').text('Proses...');
-                    },
-                    complete: function() {
-                        $('#save_survey').removeAttr('disable');
-                        $('#save_survey').text('Simpan');
-                    },
-                    success: function(response) {
-                        if (response.errors) {
-                            if (response.errors.survey_photo) {
-                                $('#survey_photo').addClass('is-invalid');
-                                $('.errorSurveyPhoto').html(response.errors.survey_photo.join(
-                                    '<br>'));
-                            } else {
-                                $('#survey_photo').removeClass('is-invalid');
-                                $('.errorSurveyPhoto').html('');
-                            }
-
-                            if (response.errors.detail_survey) {
-                                $('#detail_survey').addClass('is-invalid');
-                                $('.errorDetailSurvey').html(response.errors.detail_survey.join(
-                                    '<br>'));
-                            } else {
-                                $('#detail_survey').removeClass('is-invalid');
-                                $('.errorDetailSurvey').html('');
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses',
-                                text: response.success,
-                            }).then(function() {
-                                top.location.href =
-                                    "{{ route('order.index') }}";
-                            });
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        let errorMessage = "";
-                        if (xhr.status === 0) {
-                            errorMessage =
-                                "Network error, please check your internet connection.";
-                        } else if (xhr.status >= 400 && xhr.status < 500) {
-                            errorMessage = "Client error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else if (xhr.status >= 500) {
-                            errorMessage = "Server error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else {
-                            errorMessage = "Unexpected error: " + xhr.responseText;
-                        }
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error " + xhr.status,
-                            html: `
-                            <strong>Status:</strong> ${xhr.status}<br>
-                            <strong>Error:</strong> ${thrownError}<br>
-                        `,
-                        });
-
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-                    }
-                });
-            });
-        });
     </script>
 @endsection

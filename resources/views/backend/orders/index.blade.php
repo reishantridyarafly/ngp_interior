@@ -79,6 +79,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
+                            <input type="hidden" name="id" id="id">
                             <label for="name" class="form-label">Nama </label>
                             <small>(Jika pelanggan belum terdaftar, tambahkan <a
                                     href="{{ route('customers.index') }}">disini</a>)</small>
@@ -200,6 +201,34 @@
                 $('.errorOrderDate').html('');
             });
 
+            $('body').on('click', '#btnEdit', function() {
+                let id = $(this).data('id');
+                $.ajax({
+                    type: "GET",
+                    url: "pemesanan/" + id + "/edit",
+                    dataType: "json",
+                    success: function(response) {
+                        $('#modalLabel').html("Edit Pemesanan");
+                        $('#simpan').val("edit-pemesanan");
+                        $('#modal').modal('show');
+
+                        $('#user_id').removeClass('is-invalid');
+                        $('.errorUserId').html('');
+
+                        $('#location').removeClass('is-invalid');
+                        $('.errorLocation').html('');
+
+                        $('#order_date').removeClass('is-invalid');
+                        $('.errorOrderDate').html('');
+
+                        $('#id').val(response.id);
+                        $('#user_id').val(response.user_id).trigger('change');
+                        $('#location').val(response.location);
+                        $('#order_date').val(response.order_date);
+                    }
+                });
+            })
+
             $('#form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
@@ -314,7 +343,7 @@
                     if (result.value) {
                         $.ajax({
                             type: "DELETE",
-                            url: "{{ url('pelanggan/"+id+"') }}",
+                            url: "{{ url('pemesanan/"+id+"') }}",
                             data: {
                                 id: id
                             },

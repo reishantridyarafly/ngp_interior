@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('location', 100);
             $table->date('order_date');
             $table->text('detail_survey')->nullable();
+            $table->decimal('discount', 10, 2)->nullable();
+            $table->decimal('total', 15, 2)->nullable();
             $table->boolean('status_survey')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_design')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_approval')->default(0)->comment('0 = uncompleted, 1 = completed');

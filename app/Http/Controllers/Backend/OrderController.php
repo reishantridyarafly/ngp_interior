@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderSection;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $orders = Order::with('user')->OrderBy('order_date', 'desc')->get(['invoice', 'user_id', 'location', 'order_date']);
+            $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
             return DataTables::of($orders)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
@@ -53,6 +54,12 @@ class OrderController extends Controller
                                         </a>
                                     </li>
                                     <li>
+                                        <button class="dropdown-item" id="btnEdit" data-id="' . $data->id . '">
+                                            <i class="feather feather-edit-3 me-3"></i>
+                                            <span>Edit</span>
+                                        </button>
+                                    </li>
+                                    <li>
                                         <button class="dropdown-item" id="btnDelete" data-id="' . $data->id . '">
                                             <i class="feather feather-trash-2 me-3"></i>
                                             <span>Hapus</span>
@@ -73,6 +80,7 @@ class OrderController extends Controller
     {
         $order = Order::where('invoice', $invoice)->first();
         $user = User::find($order->user_id);
+        $orderSections = OrderSection::where('order_id', $order->id)->orderBy('created_at', 'asc')->get();
 
         $completedTasks = collect([
             $order->status_survey,
@@ -86,11 +94,18 @@ class OrderController extends Controller
 
         $totalTasks = 5;
         $progressPercentage = ($completedTasks / $totalTasks) * 100;
-        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user'));
+        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user', 'orderSections'));
+    }
+
+    public function edit($id)
+    {
+        $data = Order::find($id);
+        return response()->json($data);
     }
 
     public function store_order(Request $request)
     {
+        $id = $request->id;
         $validated = Validator::make(
             $request->all(),
             [
@@ -109,14 +124,16 @@ class OrderController extends Controller
             return response()->json(['errors' => $validated->errors()]);
         } else {
             try {
-                $order = new Order();
-                $order->invoice = $this->generateTransactionCode();
-                $order->user_id = $request->user_id;
-                $order->location = $request->location;
-                $order->order_date = $request->order_date;
-                $order->save();
+                $order = Order::updateOrCreate([
+                    'id' => $id
+                ], [
+                    'user_id' => $request->user_id,
+                    'location' => $request->location,
+                    'location' => $request->location,
+                    'order_date' => $request->order_date,
+                ]);
 
-                return response()->json(['success' => 'Data berhasil disimpan']);
+                return response()->json(['order' => $order, 'message' => 'Data berhasil disimpan.']);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',
@@ -125,6 +142,33 @@ class OrderController extends Controller
                 ], 500);
             }
         }
+    }
+
+    public function destroy(Request $request)
+    {
+        $order = Order::findOrFail($request->id);
+        $surveyPhotos = $order->survey_photos;
+        foreach ($surveyPhotos as $photo) {
+            $photoPath = storage_path("app/private/uploads/survey/{$photo->photo_name}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+        $order->survey_photos()->delete();
+        $order->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
+    private function generateTransactionCode()
+    {
+        $prefix = 'NGP';
+        $date = now()->format('Ymd');
+        $lastOrder = Order::where('invoice', 'like', $prefix . $date . '%')->latest()->first();
+        $lastCode = $lastOrder ? substr($lastOrder->invoice, -4) : '0000';
+        $nextCode = str_pad(intval($lastCode) + 1, 4, '0', STR_PAD_LEFT);
+        return $prefix . $date . $nextCode;
     }
 
     public function store_survey(Request $request)
@@ -175,15 +219,57 @@ class OrderController extends Controller
         }
     }
 
-    private function generateTransactionCode()
+    public function store_section(Request $request)
     {
-        $prefix = 'NGP';
-        $date = now()->format('Ymd');
+        $id_section = $request->id_section;
+        $validated = Validator::make(
+            $request->all(),
+            [
+                'name_section' => 'required|unique:order_sections,section_title,' . $id_section,
+            ],
+            [
+                'name_section.required' => 'Silakan isi nama bagian terlebih dahulu.',
+                'name_section.unique' => 'Bagian sudah tersedia.',
+            ]
+        );
 
-        $lastOrder = Order::latest()->first();
-        $lastCode = $lastOrder ? substr($lastOrder->code, -4) : '0000';
-        $nextCode = str_pad(intval($lastCode) + 1, 4, '0', STR_PAD_LEFT);
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        } else {
+            try {
+                $orderSection = OrderSection::updateOrCreate([
+                    'id' => $id_section
+                ], [
+                    'order_id' => $request->id_order,
+                    'section_title' => $request->name_section,
+                ]);
 
-        return $prefix . $date . $nextCode;
+                return response()->json(['orderSection' => $orderSection, 'message' => 'Data berhasil disimpan.']);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Opps...',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+        }
+    }
+
+    public function edit_section($id)
+    {
+        $data = OrderSection::find($id);
+        return response()->json($data);
+    }
+
+    public function destroy_section(Request $request)
+    {
+        $orderSection = OrderSection::find($request->id);
+
+        if ($orderSection) {
+            $orderSection->delete();
+            return response()->json(['message' => 'Data berhasil dihapus']);
+        }
+
+        return response()->json(['message' => 'Data tidak ditemukan'], 404);
     }
 }
