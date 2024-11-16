@@ -62,6 +62,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/pemesanan/bagian', [App\Http\Controllers\Backend\OrderController::class, 'store_section'])->name('order.store_section');
     Route::get('/pemesanan/bagian/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit_section'])->name('order.edit_section');
     Route::delete('/pemesanan/bagian/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy_section'])->name('order.destroy_section');
+
+    Route::get('/pemesanan/item/{idSection}/', [App\Http\Controllers\Backend\OrderItemController::class, 'index'])->name('orderItem.index');
+    Route::post('/pemesanan/item/', [App\Http\Controllers\Backend\OrderItemController::class, 'store'])->name('orderItem.store');
 });
 
 require __DIR__ . '/auth.php';

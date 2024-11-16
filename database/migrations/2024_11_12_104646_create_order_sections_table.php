@@ -15,7 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('order_id');
             $table->string('section_title');
-            $table->decimal('section_total', 15, 2)->nullable();
+            $table->text('note')->nullable();
+            $table->decimal('subtotal', 15, 2)->nullable();
+            $table->decimal('discount', 15, 2)->nullable();
+            $table->decimal('total_amount', 15, 2)->nullable();
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

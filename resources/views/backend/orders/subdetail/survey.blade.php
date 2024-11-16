@@ -1,5 +1,5 @@
-<form id="form_survey">
-    <div class="row">
+<div class="row">
+    <form id="form_survey">
         <div class="col-lg-12">
             <div class="card stretch stretch-full">
                 <div class="card-header">
@@ -52,14 +52,13 @@
                                         class="text-danger">*</span></label>
                                 <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
                                     disabled class="form-control">
-                                <small class="text-danger errorOrderDate"></small>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="survey_photo" class="form-label">Foto Hasil Survei <span
                                 class="text-danger">*</span></label>
-                        @if ($order->status_survey == 0)
+                        @if ($order->detail_survey == null)
                             <input type="file" id="survey_photo" name="survey_photo[]" class="form-control"
                                 accept="image/*" multiple>
                             <small class="text-danger errorSurveyPhoto"></small>
@@ -79,7 +78,7 @@
                     <div class="mb-3">
                         <label for="detail_survey" class="form-label">Detail Survei <span
                                 class="text-danger">*</span></label>
-                        @if ($order->status_survey == 0)
+                        @if ($order->detail_survey == null)
                             <textarea name="detail_survey" id="detail_survey" class="form-control"></textarea>
                             <small class="text-danger errorDetailSurvey"></small>
                         @else
@@ -90,7 +89,7 @@
                             </div>
                         @endif
                     </div>
-                    @if ($order->status_survey == 0)
+                    @if ($order->detail_survey == null)
                         <div class="col-lg-12 col-md-6">
                             <div class="form-group mb-3 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary" id="save_survey">Simpan</button>
@@ -100,63 +99,85 @@
                 </div>
             </div>
         </div>
+    </form>
 
-        <div class="col-lg-12">
-            <div class="card stretch stretch-full">
-                <div class="card-header">
-                    <h5 class="card-title">Kebutuhan</h5>
-                    <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand"
-                        data-id="{{ $order->id }}">
-                        <i class="feather-plus me-2"></i>
-                        <span>Tambah Kebutuhan</span>
-                    </button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
+    <div class="col-lg-12">
+        <div class="card stretch stretch-full">
+            <div class="card-header">
+                <h5 class="card-title">Kebutuhan</h5>
+                <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand"
+                    data-id="{{ $order->id }}">
+                    <i class="feather-plus me-2"></i>
+                    <span>Tambah Kebutuhan</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="1">#</th>
+                            <th scope="col">Nama Bagian</th>
+                            <th scope="col">Subtotal</th>
+                            <th scope="col">Diskon</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($orderSections as $orderSection)
                             <tr>
-                                <th scope="col" width="1">#</th>
-                                <th scope="col">Nama Bagian</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Aksi</th>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $orderSection->section_title }}</td>
+                                <td>{{ $orderSection->subtotal ? 'Rp ' . number_format($orderSection->subtotal, 0, ',', '.') : 0 }}
+                                </td>
+                                <td>{{ $orderSection->discount ? 'Rp ' . number_format($orderSection->discount, 0, ',', '.') : 0 }}
+                                </td>
+                                <td>{{ $orderSection->total_amount ? 'Rp ' . number_format($orderSection->total_amount, 0, ',', '.') : 0 }}
+                                </td>
+                                <td>
+                                    <div class="d-flex">
+                                        <button type="button" id="btnEditSection" class="btn btn-sm btn-info me-2"
+                                            data-idsection="{{ $orderSection->id }}">Ubah
+                                            Bagian</button>
+                                        <a href="{{ route('orderItem.index', $orderSection->id) }}"
+                                            class="btn btn-sm btn-primary text-danger me-2" type="button">Item</a>
+                                        <button class="btn btn-sm bg-soft-danger text-danger"
+                                            data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
+                                            type="button">Hapus</button>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($orderSections as $orderSection)
-                                <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
-                                    <td>{{ $orderSection->section_title }}</td>
-                                    <td>{{ $orderSection->section_total ?? 0 }}</td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <button type="button" id="btnEditSection"
-                                                class="btn btn-sm btn-info me-2"
-                                                data-idsection="{{ $orderSection->id }}">Ubah
-                                                Bagian</button>
-                                            <button class="btn btn-sm btn-primary text-danger me-2"
-                                                data-idsection="{{ $orderSection->id }}" id="btnAddItems"
-                                                type="button">Tambah Item</button>
-                                            <button class="btn btn-sm bg-soft-danger text-danger"
-                                                data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
-                                                type="button">Hapus</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4">Data belum tersedia</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                        @empty
+                            <tr>
+                                <td colspan="4">Data belum tersedia</td>
+                            </tr>
+                        @endforelse
+                        @php
+                            $totalKeseluruhan = $orderSections->sum('total_amount');
+                        @endphp
+
+                        <tr class="bg-gray-100">
+                            <th colspan="4" class="text-uppercase">Total Keseluruhan</th>
+                            <th colspan="2">
+                                {{ $totalKeseluruhan ? 'Rp ' . number_format($totalKeseluruhan, 0, ',', '.') : 'Rp 0' }}
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="col-lg-12 col-md-6">
+                    <div class="form-group mb-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-danger"><i
+                                class="feather-file-text me-2"></i>Cetak</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</form>
+</div>
+
 
 @section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.10.5/autoNumeric.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/super-build/ckeditor.js"></script>
 
     <script>
@@ -165,33 +186,6 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
-
-            var i = 1;
-            $("#add_row").click(function() {
-                b = i - 1;
-                $("#addr" + i)
-                    .html($("#addr" + b).html())
-                    .find("td:first-child")
-                    .html(i + 1);
-                $("#tab_logic").append('<tr id="addr' + (i + 1) + '"></tr>');
-                i++;
-            });
-
-            $("#delete_row").click(function() {
-                if (i > 1) {
-                    $("#addr" + (i - 1)).html("");
-                    i--;
-                }
-                calc();
-            });
-
-            $("#tab_logic tbody").on("keyup change", function() {
-                calc();
-            });
-
-            $("#tax").on("keyup change", function() {
-                calc_total();
             });
 
             $('#form_survey').submit(function(e) {
@@ -210,7 +204,7 @@
                     },
                     complete: function() {
                         $('#save_survey').removeAttr('disable');
-                        $('#save_survey').text('Simpan');
+                        $('#save_survey').html('Simpan');
                     },
                     success: function(response) {
                         if (response.errors) {
@@ -222,7 +216,6 @@
                                 $('#survey_photo').removeClass('is-invalid');
                                 $('.errorSurveyPhoto').html('');
                             }
-
                             if (response.errors.detail_survey) {
                                 $('#detail_survey').addClass('is-invalid');
                                 $('.errorDetailSurvey').html(response.errors.detail_survey.join(
@@ -237,12 +230,14 @@
                                 title: 'Sukses',
                                 text: response.success,
                             }).then(function() {
-                                top.location.href =
-                                    "{{ route('order.index') }}";
+                                location.reload();
                             });
                         }
                     },
                     error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+
                         let errorMessage = "";
                         if (xhr.status === 0) {
                             errorMessage =
@@ -261,13 +256,10 @@
                             icon: "error",
                             title: "Error " + xhr.status,
                             html: `
-                            <strong>Status:</strong> ${xhr.status}<br>
-                            <strong>Error:</strong> ${thrownError}<br>
-                        `,
+                                <strong>Status:</strong> ${xhr.status}<br>
+                                <strong>Error:</strong> ${thrownError}<br>
+                            `,
                         });
-
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
                     }
                 });
             });
@@ -300,6 +292,7 @@
                         $('#id_section').val(id_section);
                         $('#id_order').val(response.order_id);
                         $('#name_section').val(response.section_title);
+                        $('#note_section').val(response.note);
                     }
                 });
 
@@ -334,8 +327,10 @@
                         } else {
                             $('#modalSection').modal('hide');
                             $('#form_section').trigger("reset");
-                            let rowCount = $('table tbody tr').length + 1;
+                            $('table tbody tr td[colspan="4"]').remove();
+
                             if (!$('#id_section').val()) {
+                                let rowCount = $('table tbody tr').length + 1;
                                 let newRow = `
                                 <tr>
                                     <th scope="row">${rowCount}</th>
@@ -344,21 +339,23 @@
                                     <td>
                                         <div class="d-flex">
                                             <button type="button" class="btn btn-sm btn-info me-2" data-idsection="${response.orderSection.id}" id="btnEditSection">Ubah Bagian</button>
-                                            <button type="button" class="btn btn-sm btn-primary text-danger me-2">Tambah Item</button>
+                                            <a href="/pemesanan/item/${response.orderSection.id}" class="btn btn-sm btn-primary text-danger me-2">Item</a>
                                             <button type="button" class="btn btn-sm bg-soft-danger text-danger" data-idsection="${response.orderSection.id}" id="btnDeleteSection">Hapus</button>
                                         </div>
                                     </td>
                                 </tr>
                                 `;
                                 $('table tbody').append(newRow);
+
+                                $('table tbody tr').each(function(index) {
+                                    $(this).find('th').first().text(index + 1);
+                                });
                             } else {
                                 let row = $("tr").filter(function() {
                                     return $(this).find("button[data-idsection='" +
                                         response.orderSection.id + "']").length > 0;
                                 });
-
-                                row.find("td").eq(0).text(response.orderSection
-                                    .section_title);
+                                row.find("td").eq(0).text(response.orderSection.section_title);
                                 row.find("td").eq(1).text(response.orderSection.section_total ??
                                     0);
                             }
@@ -487,39 +484,7 @@
                     }
                 });
             });
-
-            $('body').on('click', '#btnAddItems', function() {
-                let id_section = $(this).data('idsection');
-                $('#modalLabelItem').html("Tambah Bagian Item");
-                $('#modalItem').modal('show');
-                $('#form_item').trigger("reset");
-            });
         });
-
-        function calc() {
-            $("#tab_logic tbody tr").each(function(i, element) {
-                var html = $(this).html();
-                if (html != "") {
-                    var qty = $(this).find(".qty").val();
-                    var price = $(this).find(".price").val();
-                    $(this)
-                        .find(".total")
-                        .val(qty * price);
-                    calc_total();
-                }
-            });
-        }
-
-        function calc_total() {
-            total = 0;
-            $(".total").each(function() {
-                total += parseInt($(this).val());
-            });
-            $("#sub_total").val(total.toFixed(2));
-            tax_sum = (total / 100) * $("#tax").val();
-            $("#tax_amount").val(tax_sum.toFixed(2));
-            $("#total_amount").val((tax_sum + total).toFixed(2));
-        }
 
         CKEDITOR.ClassicEditor.create(document.getElementById("detail_survey"), {
                 // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format

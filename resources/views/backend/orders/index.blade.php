@@ -199,6 +199,10 @@
 
                 $('#order_date').removeClass('is-invalid');
                 $('.errorOrderDate').html('');
+
+
+                $('#user_id').val('').trigger('change');
+                $('#order_date').prop('disabled', false);
             });
 
             $('body').on('click', '#btnEdit', function() {
@@ -225,6 +229,8 @@
                         $('#user_id').val(response.user_id).trigger('change');
                         $('#location').val(response.location);
                         $('#order_date').val(response.order_date);
+
+                        $('#order_date').prop('disabled', true);
                     }
                 });
             })
@@ -408,3 +414,4 @@
         });
     </script>
 @endsection
+

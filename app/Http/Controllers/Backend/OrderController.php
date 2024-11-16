@@ -106,32 +106,43 @@ class OrderController extends Controller
     public function store_order(Request $request)
     {
         $id = $request->id;
-        $validated = Validator::make(
-            $request->all(),
-            [
-                'user_id' => 'required',
-                'location' => 'required',
-                'order_date' => 'required',
-            ],
-            [
-                'user_id.required' => 'Silakan isi pelanggan terlebih dahulu.',
-                'location.required' => 'Silakan isi lokasi terlebih dahulu.',
-                'order_date.required' => 'Silakan isi tanggal terlebih dahulu.',
-            ]
-        );
+
+        $rules = [
+            'user_id' => 'required',
+            'location' => 'required',
+        ];
+
+        if (!$id) {
+            $rules['order_date'] = 'required';
+        }
+
+        $messages = [
+            'user_id.required' => 'Silakan isi pelanggan terlebih dahulu.',
+            'location.required' => 'Silakan isi lokasi terlebih dahulu.',
+            'order_date.required' => 'Silakan isi tanggal terlebih dahulu.',
+        ];
+
+        $validated = Validator::make($request->all(), $rules, $messages);
 
         if ($validated->fails()) {
             return response()->json(['errors' => $validated->errors()]);
         } else {
             try {
-                $order = Order::updateOrCreate([
-                    'id' => $id
-                ], [
+                $orderData = [
+                    'invoice' => $id ? Order::find($id)->invoice : $this->generateTransactionCode(),
                     'user_id' => $request->user_id,
                     'location' => $request->location,
-                    'location' => $request->location,
-                    'order_date' => $request->order_date,
-                ]);
+                ];
+
+                if (!$id) {
+                    $orderData['order_date'] = $request->order_date;
+                }
+
+                $order = Order::updateOrCreate(
+                    ['id' => $id],
+                    $orderData
+                );
+
 
                 return response()->json(['order' => $order, 'message' => 'Data berhasil disimpan.']);
             } catch (\Exception $e) {
@@ -197,7 +208,6 @@ class OrderController extends Controller
             try {
                 $order = Order::find($request->id);
                 $order->detail_survey = $request->detail_survey;
-                $order->status_survey = 1;
                 $order->save();
 
                 if ($request->hasFile('survey_photo')) {
@@ -242,6 +252,7 @@ class OrderController extends Controller
                 ], [
                     'order_id' => $request->id_order,
                     'section_title' => $request->name_section,
+                    'note' => $request->note_section,
                 ]);
 
                 return response()->json(['orderSection' => $orderSection, 'message' => 'Data berhasil disimpan.']);
