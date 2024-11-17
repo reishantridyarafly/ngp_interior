@@ -152,24 +152,16 @@
                                 <td colspan="4">Data belum tersedia</td>
                             </tr>
                         @endforelse
-                        @php
-                            $totalKeseluruhan = $orderSections->sum('total_amount');
-                        @endphp
-
-                        <tr class="bg-gray-100">
-                            <th colspan="4" class="text-uppercase">Total Keseluruhan</th>
-                            <th colspan="2">
-                                {{ $totalKeseluruhan ? 'Rp ' . number_format($totalKeseluruhan, 0, ',', '.') : 'Rp 0' }}
-                            </th>
-                        </tr>
                     </tbody>
                 </table>
 
                 <div class="col-lg-12 col-md-6">
-                    <div class="form-group mb-3 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-danger"><i
-                                class="feather-file-text me-2"></i>Cetak</button>
-                    </div>
+                    <form id="form_print">
+                        <div class="form-group mb-3 d-flex justify-content-end">
+                            <input type="hidden" name="idorder" id="idorder" value="{{ $order->id }}">
+                            <button type="submit" class="btn btn-danger" id="btnPrint">Cetak</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -335,7 +327,9 @@
                                 <tr>
                                     <th scope="row">${rowCount}</th>
                                     <td>${response.orderSection.section_title}</td>
-                                    <td>${response.orderSection.section_total ?? 0}</td>
+                                    <td>${response.orderSection.subtotal ?? 0}</td>
+                                    <td>${response.orderSection.discount ?? 0}</td>
+                                    <td>${response.orderSection.total_amount ?? 0}</td>
                                     <td>
                                         <div class="d-flex">
                                             <button type="button" class="btn btn-sm btn-info me-2" data-idsection="${response.orderSection.id}" id="btnEditSection">Ubah Bagian</button>
@@ -480,6 +474,51 @@
                                     html: `<strong>Status:</strong> ${xhr.status}<br><strong>Error:</strong> ${thrownError}<br>`,
                                 });
                             }
+                        });
+                    }
+                });
+            });
+
+            $('#form_print').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    data: $(this).serialize(),
+                    url: "{{ route('printRAB.index') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#btnPrint').attr('disable', 'disabled');
+                        $('#btnPrint').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#btnPrint').removeAttr('disable');
+                        $('#btnPrint').html('Cetak');
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+
+                        let errorMessage = "";
+                        if (xhr.status === 0) {
+                            errorMessage =
+                                "Network error, please check your internet connection.";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = "Client error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = "Server error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else {
+                            errorMessage = "Unexpected error: " + xhr.responseText;
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error " + xhr.status,
+                            html: `
+                                <strong>Status:</strong> ${xhr.status}<br>
+                                <strong>Error:</strong> ${thrownError}<br>
+                            `,
                         });
                     }
                 });
