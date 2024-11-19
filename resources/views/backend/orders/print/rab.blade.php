@@ -155,17 +155,17 @@
             <div class="price-offer-title">PENAWARAN HARGA</div>
             <table class="details-table">
                 <tr>
-                    <td>Tgl</td>
+                    <td>Tanggal</td>
                     <td>:</td>
                     <td class="value">{{ \Carbon\Carbon::now()->format('d F Y') }}</td>
                 </tr>
                 <tr>
-                    <td>Nama Customer</td>
+                    <td>Nama Pelanggan</td>
                     <td>:</td>
                     <td class="value">{{ $order->user->first_name . ' ' . $order->user->last_name }}</td>
                 </tr>
                 <tr>
-                    <td>Lokasi Project</td>
+                    <td>Lokasi</td>
                     <td>:</td>
                     <td class="value">{{ $order->location }}</td>
                 </tr>
@@ -238,6 +238,12 @@
                         {{ $section->total_amount ? number_format($section->total_amount, 0, ',', '.') : 0 }}</td>
                 </tr>
             @endforeach
+            <tr class="subtotal-row">
+                <td colspan="5" style="text-align: right;">Total Keseluruhan</td>
+                <td class="number-column">
+                    {{ $total_amount ? number_format($total_amount, 0, ',', '.') : 0 }}
+                </td>
+            </tr>
         </table>
     </div>
 

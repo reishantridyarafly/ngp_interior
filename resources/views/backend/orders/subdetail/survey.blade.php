@@ -481,47 +481,9 @@
 
             $('#form_print').submit(function(e) {
                 e.preventDefault();
-                $.ajax({
-                    data: $(this).serialize(),
-                    url: "{{ route('printRAB.index') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    beforeSend: function() {
-                        $('#btnPrint').attr('disable', 'disabled');
-                        $('#btnPrint').text('Proses...');
-                    },
-                    complete: function() {
-                        $('#btnPrint').removeAttr('disable');
-                        $('#btnPrint').html('Cetak');
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-
-                        let errorMessage = "";
-                        if (xhr.status === 0) {
-                            errorMessage =
-                                "Network error, please check your internet connection.";
-                        } else if (xhr.status >= 400 && xhr.status < 500) {
-                            errorMessage = "Client error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else if (xhr.status >= 500) {
-                            errorMessage = "Server error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else {
-                            errorMessage = "Unexpected error: " + xhr.responseText;
-                        }
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error " + xhr.status,
-                            html: `
-                                <strong>Status:</strong> ${xhr.status}<br>
-                                <strong>Error:</strong> ${thrownError}<br>
-                            `,
-                        });
-                    }
-                });
+                let formData = $(this).serialize();
+                let url = "{{ route('printRAB.index') }}";
+                window.open(url + "?" + formData, '_blank');
             });
         });
 

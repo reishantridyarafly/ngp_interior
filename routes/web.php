@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pemesanan/item/{idSection}/', [App\Http\Controllers\Backend\OrderItemController::class, 'index'])->name('orderItem.index');
     Route::post('/pemesanan/item/', [App\Http\Controllers\Backend\OrderItemController::class, 'store'])->name('orderItem.store');
 
-    Route::post('pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
+    Route::get('pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
 });
 
 require __DIR__ . '/auth.php';
