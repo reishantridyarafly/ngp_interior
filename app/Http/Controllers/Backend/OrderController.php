@@ -8,7 +8,6 @@ use App\Models\OrderSection;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -208,6 +207,7 @@ class OrderController extends Controller
             try {
                 $order = Order::find($request->id);
                 $order->detail_survey = $request->detail_survey;
+                $order->status_survey = 1;
                 $order->save();
 
                 if ($request->hasFile('survey_photo')) {

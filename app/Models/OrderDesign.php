@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class Order extends Model
+class OrderDesign extends Model
 {
     use HasFactory;
 
@@ -34,23 +34,8 @@ class Order extends Model
         return 'string';
     }
 
-    public function user()
+    public function order()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function sections()
-    {
-        return $this->hasMany(OrderSection::class);
-    }
-
-    public function survey_photos()
-    {
-        return $this->hasMany(SurveyPhoto::class);
-    }
-
-    public function design_photos()
-    {
-        return $this->hasMany(OrderDesign::class);
+        return $this->belongsTo(Order::class);
     }
 }

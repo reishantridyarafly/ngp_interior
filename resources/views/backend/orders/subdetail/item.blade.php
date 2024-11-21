@@ -13,9 +13,8 @@
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('order.index') }}">Pemesanan</a></li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('order.detail', $section->order->invoice) }}"
-                                style="text-transform: capitalize !important;">
-                                {{ $section->section_title }}
+                            <a href="{{ route('order.detail', $section->order->invoice) }}">
+                                {{ $section->order->invoice }}
                             </a>
                         </li>
                         <li class="breadcrumb-item">@yield('title')</li>

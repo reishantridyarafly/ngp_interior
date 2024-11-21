@@ -46,7 +46,7 @@
                                 <button
                                     class="nav-link {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
                                     data-bs-toggle="tab" data-bs-target="#designTab"
-                                    {{ $order->status_survey == 0 ? 'disabled' : '' }}>Desain</button>
+                                    {{ $order->status_survey == 0 ? 'disabled' : '' }}>Kebutuhan Desain</button>
                             </li>
 
                             <!-- Tab Persetujuan -->
@@ -105,22 +105,7 @@
 
                     <div class="tab-pane fade {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
                         id="designTab">
-                        <div class="card stretch stretch-full">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center"
-                                    style="height: calc(100vh - 315px)">
-                                    <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">Design</h2>
-                                        <p class="fs-12 text-muted">There is no activity on this project</p>
-                                        <a href="javascript:void(0);"
-                                            class="avatar-text bg-soft-primary text-primary mx-auto"
-                                            data-bs-toggle="tooltip" title="Create Activity">
-                                            <i class="feather-plus"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('backend.orders.subdetail.design')
                     </div>
 
                     <div class="tab-pane fade {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
@@ -187,36 +172,6 @@
         </div>
     </main>
 
-    <!-- modal -->
-    <div id="modalSection" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabelSection"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="form_section">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modalLabelSection"></h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <input type="hidden" name="id_order" id="id_order">
-                            <input type="hidden" name="id_section" id="id_section">
-                            <label for="name_section" class="form-label">Nama Bagian <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" id="name_section" name="name_section" class="form-control" autofocus>
-                            <small class="text-danger errorNameSection"></small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="note_section" class="form-label">Catatan </label>
-                            <textarea class="form-control" name="note_section" id="note_section" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary" id="save_section">Simpan</button>
-                    </div>
-                </form>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    @yield('script_survey')
+    @yield('script_design')
 @endsection

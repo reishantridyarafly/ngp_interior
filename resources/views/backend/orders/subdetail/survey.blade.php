@@ -63,11 +63,32 @@
                                 accept="image/*" multiple>
                             <small class="text-danger errorSurveyPhoto"></small>
                         @else
+                            <style>
+                                .design-photo-container {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    gap: 10px;
+                                }
+
+                                .design-photo-container img {
+                                    width: 300px;
+                                    height: 200px;
+                                    object-fit: cover;
+                                    border-radius: 8px;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                                }
+
+                                .design-photo-container form {
+                                    width: 100%;
+                                    text-align: center;
+                                }
+                            </style>
                             <div class="row">
                                 @foreach ($order->survey_photos as $photo)
-                                    <div class="col-3 mb-4">
-                                        <a href="{{ route('file.private', $photo->photo_name) }}" target="_blank">
-                                            <img class="w-100" src="{{ route('file.private', $photo->photo_name) }}"
+                                    <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
+                                        <a href="{{ route('file.survey', $photo->photo_name) }}" target="_blank">
+                                            <img class="w-100" src="{{ route('file.survey', $photo->photo_name) }}"
                                                 alt="{{ $photo->photo_name }}">
                                         </a>
                                     </div>
@@ -100,76 +121,9 @@
             </div>
         </div>
     </form>
-
-    <div class="col-lg-12">
-        <div class="card stretch stretch-full">
-            <div class="card-header">
-                <h5 class="card-title">Kebutuhan</h5>
-                <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand"
-                    data-id="{{ $order->id }}">
-                    <i class="feather-plus me-2"></i>
-                    <span>Tambah Kebutuhan</span>
-                </button>
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col" width="1">#</th>
-                            <th scope="col">Nama Bagian</th>
-                            <th scope="col">Subtotal</th>
-                            <th scope="col">Diskon</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($orderSections as $orderSection)
-                            <tr>
-                                <th scope="row">{{ $loop->iteration }}</th>
-                                <td>{{ $orderSection->section_title }}</td>
-                                <td>{{ $orderSection->subtotal ? 'Rp ' . number_format($orderSection->subtotal, 0, ',', '.') : 0 }}
-                                </td>
-                                <td>{{ $orderSection->discount ? 'Rp ' . number_format($orderSection->discount, 0, ',', '.') : 0 }}
-                                </td>
-                                <td>{{ $orderSection->total_amount ? 'Rp ' . number_format($orderSection->total_amount, 0, ',', '.') : 0 }}
-                                </td>
-                                <td>
-                                    <div class="d-flex">
-                                        <button type="button" id="btnEditSection" class="btn btn-sm btn-info me-2"
-                                            data-idsection="{{ $orderSection->id }}">Ubah
-                                            Bagian</button>
-                                        <a href="{{ route('orderItem.index', $orderSection->id) }}"
-                                            class="btn btn-sm btn-primary text-danger me-2" type="button">Item</a>
-                                        <button class="btn btn-sm bg-soft-danger text-danger"
-                                            data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
-                                            type="button">Hapus</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4">Data belum tersedia</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-
-                <div class="col-lg-12 col-md-6">
-                    <form id="form_print">
-                        <div class="form-group mb-3 d-flex justify-content-end">
-                            <input type="hidden" name="idorder" id="idorder" value="{{ $order->id }}">
-                            <button type="submit" class="btn btn-danger" id="btnPrint">Cetak</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-
-@section('script')
+@section('script_survey')
     <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/super-build/ckeditor.js"></script>
 
     <script>
@@ -254,236 +208,6 @@
                         });
                     }
                 });
-            });
-
-            $('#btnAddSection').click(function() {
-                let id = $(this).data('id');
-                $('#id_order').val(id);
-                $('#modalLabelSection').html("Tambah Bagian");
-                $('#modalSection').modal('show');
-                $('#form_section').trigger("reset");
-
-                $('#name_section').removeClass('is-invalid');
-                $('.errorNameSection').html('');
-            });
-
-            $('body').on('click', '#btnEditSection', function() {
-                let id_section = $(this).data('idsection');
-                $.ajax({
-                    type: "GET",
-                    url: "/pemesanan/bagian/" + id_section + "/edit",
-                    dataType: "json",
-                    success: function(response) {
-                        $('#modalLabelSection').html("Edit Bagian");
-                        $('#save_section').val("edit-bagian");
-                        $('#modalSection').modal('show');
-
-                        $('#name_section').removeClass('is-invalid');
-                        $('.errorNameSection').html('');
-
-                        $('#id_section').val(id_section);
-                        $('#id_order').val(response.order_id);
-                        $('#name_section').val(response.section_title);
-                        $('#note_section').val(response.note);
-                    }
-                });
-
-            });
-
-            $('#form_section').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    data: $(this).serialize(),
-                    url: "{{ route('order.store_section') }}",
-                    type: "POST",
-                    dataType: 'json',
-
-                    beforeSend: function() {
-                        $('#save_section').attr('disable', 'disabled');
-                        $('#save_section').text('Proses...');
-                    },
-                    complete: function() {
-                        $('#save_section').removeAttr('disable');
-                        $('#save_section').html('Simpan');
-                    },
-                    success: function(response) {
-                        if (response.errors) {
-                            if (response.errors.name_section) {
-                                $('#name_section').addClass('is-invalid');
-                                $('.errorNameSection').html(response.errors.name_section.join(
-                                    '<br>'));
-                            } else {
-                                $('#name_section').removeClass('is-invalid');
-                                $('.errorNameSection').html('');
-                            }
-                        } else {
-                            $('#modalSection').modal('hide');
-                            $('#form_section').trigger("reset");
-                            $('table tbody tr td[colspan="4"]').remove();
-
-                            if (!$('#id_section').val()) {
-                                let rowCount = $('table tbody tr').length + 1;
-                                let newRow = `
-                                <tr>
-                                    <th scope="row">${rowCount}</th>
-                                    <td>${response.orderSection.section_title}</td>
-                                    <td>${response.orderSection.subtotal ?? 0}</td>
-                                    <td>${response.orderSection.discount ?? 0}</td>
-                                    <td>${response.orderSection.total_amount ?? 0}</td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <button type="button" class="btn btn-sm btn-info me-2" data-idsection="${response.orderSection.id}" id="btnEditSection">Ubah Bagian</button>
-                                            <a href="/pemesanan/item/${response.orderSection.id}" class="btn btn-sm btn-primary text-danger me-2">Item</a>
-                                            <button type="button" class="btn btn-sm bg-soft-danger text-danger" data-idsection="${response.orderSection.id}" id="btnDeleteSection">Hapus</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                `;
-                                $('table tbody').append(newRow);
-
-                                $('table tbody tr').each(function(index) {
-                                    $(this).find('th').first().text(index + 1);
-                                });
-                            } else {
-                                let row = $("tr").filter(function() {
-                                    return $(this).find("button[data-idsection='" +
-                                        response.orderSection.id + "']").length > 0;
-                                });
-                                row.find("td").eq(0).text(response.orderSection.section_title);
-                                row.find("td").eq(1).text(response.orderSection.section_total ??
-                                    0);
-                            }
-
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal
-                                        .stopTimer;
-                                    toast.onmouseleave = Swal
-                                        .resumeTimer;
-                                }
-                            });
-                            Toast.fire({
-                                icon: "success",
-                                title: response.message
-                            });
-                        }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                            thrownError);
-
-                        let errorMessage = "";
-                        if (xhr.status === 0) {
-                            errorMessage =
-                                "Network error, please check your internet connection.";
-                        } else if (xhr.status >= 400 && xhr.status < 500) {
-                            errorMessage = "Client error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else if (xhr.status >= 500) {
-                            errorMessage = "Server error (" + xhr.status + "): " + xhr
-                                .responseText;
-                        } else {
-                            errorMessage = "Unexpected error: " + xhr.responseText;
-                        }
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error " + xhr.status,
-                            html: `
-                                <strong>Status:</strong> ${xhr.status}<br>
-                                <strong>Error:</strong> ${thrownError}<br>
-                            `,
-                        });
-                    }
-                });
-            });
-
-            $('body').on('click', '#btnDeleteSection', function() {
-                let id = $(this).data('idsection');
-                Swal.fire({
-                    title: 'Hapus',
-                    text: "Apakah anda yakin?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal',
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            type: "DELETE",
-                            url: "/pemesanan/bagian/" + id,
-                            data: {
-                                id: id
-                            },
-                            dataType: 'json',
-                            success: function(response) {
-                                if (response.message) {
-                                    $("tr").filter(function() {
-                                        return $(this).find(
-                                            "button[data-idsection='" + id +
-                                            "']").length > 0;
-                                    }).remove();
-
-                                    $('table tbody tr').each(function(index) {
-                                        $(this).find('th').text(index +
-                                            1);
-                                    });
-
-                                    const Toast = Swal.mixin({
-                                        toast: true,
-                                        position: "top-end",
-                                        showConfirmButton: false,
-                                        timer: 2000,
-                                        timerProgressBar: true,
-                                    });
-                                    Toast.fire({
-                                        icon: "success",
-                                        title: response.message
-                                    });
-                                }
-                            },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                console.error(xhr.status + "\n" + xhr.responseText +
-                                    "\n" + thrownError);
-
-                                let errorMessage = "";
-                                if (xhr.status === 0) {
-                                    errorMessage =
-                                        "Network error, please check your internet connection.";
-                                } else if (xhr.status >= 400 && xhr.status < 500) {
-                                    errorMessage = "Client error (" + xhr.status +
-                                        "): " + xhr.responseText;
-                                } else if (xhr.status >= 500) {
-                                    errorMessage = "Server error (" + xhr.status +
-                                        "): " + xhr.responseText;
-                                } else {
-                                    errorMessage = "Unexpected error: " + xhr
-                                        .responseText;
-                                }
-
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error " + xhr.status,
-                                    html: `<strong>Status:</strong> ${xhr.status}<br><strong>Error:</strong> ${thrownError}<br>`,
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-
-            $('#form_print').submit(function(e) {
-                e.preventDefault();
-                let formData = $(this).serialize();
-                let url = "{{ route('printRAB.index') }}";
-                window.open(url + "?" + formData, '_blank');
             });
         });
 

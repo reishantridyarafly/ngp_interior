@@ -3,16 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-Route::get('/file/private/{filename}', function ($filename) {
-    $path = 'uploads/survey/' . $filename;
-
-    if (Storage::disk('private')->exists($path)) {
-        return response()->file(storage_path('app/private/' . $path));
-    }
-
-    abort(404);
-})->name('file.private');
-
 Route::get('/', [App\Http\Controllers\Frontend\BerandaController::class, 'index'])->name('beranda.index');
 Route::get('/tentang', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about.index');
 
@@ -66,7 +56,31 @@ Route::middleware('auth')->group(function () {
     Route::get('/pemesanan/item/{idSection}/', [App\Http\Controllers\Backend\OrderItemController::class, 'index'])->name('orderItem.index');
     Route::post('/pemesanan/item/', [App\Http\Controllers\Backend\OrderItemController::class, 'store'])->name('orderItem.store');
 
-    Route::get('pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
+    Route::get('/pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
+
+    Route::get('/pemesanan/desain/tambah/{invoice}', [App\Http\Controllers\Backend\OrderDesignController::class, 'create'])->name('orderDesign.create');
+    Route::post('/pemesanan/desain/tambah', [App\Http\Controllers\Backend\OrderDesignController::class, 'store'])->name('orderDesign.store');
+    Route::delete('/pemesanan/design/{id}', [App\Http\Controllers\Backend\OrderDesignController::class, 'destroy'])->name('orderDesign.destroy');
+
+    Route::get('/file/survey/{filename}', function ($filename) {
+        $path = 'uploads/survey/' . $filename;
+
+        if (Storage::disk('private')->exists($path)) {
+            return response()->file(storage_path('app/private/' . $path));
+        }
+
+        abort(404);
+    })->name('file.survey');
+
+    Route::get('/file/design/{filename}', function ($filename) {
+        $path = 'uploads/design/' . $filename;
+
+        if (Storage::disk('private')->exists($path)) {
+            return response()->file(storage_path('app/private/' . $path));
+        }
+
+        abort(404);
+    })->name('file.design');
 });
 
 require __DIR__ . '/auth.php';
