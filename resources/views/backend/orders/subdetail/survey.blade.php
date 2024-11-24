@@ -1,126 +1,173 @@
 <div class="row">
-    <form id="form_survey">
-        <div class="col-lg-12">
-            <div class="card stretch stretch-full">
-                <div class="card-header">
-                    <h5 class="card-title">Hasil Survei</h5>
+    <div class="col-lg-12">
+        <div class="card stretch stretch-full">
+            <div class="card-header">
+                <h5 class="card-title">Hasil Survei</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="invoice" class="form-label">Invoice</label>
+                            <input type="text" id="invoice" name="invoice" class="form-control"
+                                value="{{ $order->invoice }}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nama Pemesan</label>
+                            <input type="text" id="name" name="name" class="form-control"
+                                value="{{ $user->first_name . ' ' . $user->last_name }}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="telephone" class="form-label">No Telepon</label>
+                            <input type="text" id="telephone" name="telephone" class="form-control"
+                                value="{{ $user->telephone }}" disabled>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <input type="hidden" name="id" id="id" value="{{ $order->id }}">
-                                <label for="invoice" class="form-label">Invoice</label>
-                                <input type="text" id="invoice" name="invoice" class="form-control"
-                                    value="{{ $order->invoice }}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nama Pemesan</label>
-                                <input type="text" id="name" name="name" class="form-control"
-                                    value="{{ $user->first_name . ' ' . $user->last_name }}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <label for="telephone" class="form-label">No Telepon</label>
-                                <input type="text" id="telephone" name="telephone" class="form-control"
-                                    value="{{ $user->telephone }}" disabled>
-                            </div>
+                <div class="row mb-3">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="text" id="email" name="email" class="form-control"
+                                value="{{ $user->email }}" disabled>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="text" id="email" name="email" class="form-control"
-                                    value="{{ $user->email }}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <label for="location" class="form-label">Lokasi <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" id="location" name="location" class="form-control"
-                                    value="{{ $order->location }}" disabled>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-12">
-                            <div class="mb-3">
-                                <label for="order_date" class="form-label">Tanggal Pemesanan <span
-                                        class="text-danger">*</span></label>
-                                <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
-                                    disabled class="form-control">
-                            </div>
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Lokasi</label>
+                            <input type="text" id="location" name="location" class="form-control"
+                                value="{{ $order->location }}" disabled>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="survey_photo" class="form-label">Foto Hasil Survei <span
-                                class="text-danger">*</span></label>
-                        @if ($order->detail_survey == null)
-                            <input type="file" id="survey_photo" name="survey_photo[]" class="form-control"
-                                accept="image/*" multiple>
-                            <small class="text-danger errorSurveyPhoto"></small>
-                        @else
-                            <style>
-                                .design-photo-container {
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: center;
-                                    gap: 10px;
-                                }
+                    <div class="col-lg-4 col-md-12">
+                        <div class="mb-3">
+                            <label for="order_date" class="form-label">Tanggal Pemesanan</label>
+                            <input type="date" id="order_date" name="order_date" value="{{ $order->order_date }}"
+                                disabled class="form-control">
+                        </div>
+                    </div>
+                </div>
+                @if (auth()->user()->role == 'admin')
+                    <div class="row mb-5">
+                        <div class="col-lg-12">
+                            <label class="form-label">Upload hasil survei (JPG, JPEG, PNG, .webp) <span
+                                    class="text-danger">*</span></label>
+                            <form action="{{ route('order.store_image_survey') }}" method="POST"
+                                enctype="multipart/form-data" class="dropzone upload-zone">
+                                <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
+                                @csrf
+                            </form>
+                            <small class="text-danger errorPhotoSurvey"></small>
+                        </div>
+                    </div>
+                @endif
+                <div class="row">
+                    <style>
+                        .design-photo-container {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 10px;
+                        }
 
-                                .design-photo-container img {
-                                    width: 300px;
-                                    height: 200px;
-                                    object-fit: cover;
-                                    border-radius: 8px;
-                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                                }
+                        .design-photo-container img {
+                            width: 300px;
+                            height: 200px;
+                            object-fit: cover;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        }
 
-                                .design-photo-container form {
-                                    width: 100%;
-                                    text-align: center;
-                                }
-                            </style>
-                            <div class="row">
-                                @foreach ($order->survey_photos as $photo)
-                                    <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
-                                        <a href="{{ route('file.survey', $photo->photo_name) }}" target="_blank">
-                                            <img class="w-100" src="{{ route('file.survey', $photo->photo_name) }}"
-                                                alt="{{ $photo->photo_name }}">
-                                        </a>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
+                        .design-photo-container form {
+                            width: 100%;
+                            text-align: center;
+                        }
+                    </style>
+                    @foreach ($order->survey_photos as $photo)
+                        <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
+                            <a href="{{ route('file.survey', $photo->photo_name) }}" target="_blank">
+                                <img src="{{ route('file.survey', $photo->photo_name) }}"
+                                    alt="{{ $photo->photo_name }}">
+                            </a>
+                            @if (auth()->user()->role == 'admin')
+                                <button type="submit" class="btn btn-danger btn-sm mt-3" id="btnDeleteSurveyPhoto"
+                                    data-idsurveyphoto="{{ $photo->id }}">
+                                    Hapus
+                                </button>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                <form id="form_survey">
                     <div class="mb-3">
                         <label for="detail_survey" class="form-label">Detail Survei <span
                                 class="text-danger">*</span></label>
-                        @if ($order->detail_survey == null)
-                            <textarea name="detail_survey" id="detail_survey" class="form-control"></textarea>
+                        <input type="hidden" name="id" id="id" value="{{ $order->id }}">
+                        @if (auth()->user()->role == 'admin')
+                            <textarea name="detail_survey" id="detail_survey" class="form-control">{{ $order->detail_survey ?? '' }}</textarea>
                             <small class="text-danger errorDetailSurvey"></small>
                         @else
-                            <div class="row">
-                                <div class="col-12">
-                                    {!! $order->detail_survey !!}
-                                </div>
+                            <p>{!! $order->detail_survey ?? '' !!}</p>
+                        @endif
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="initial_payment" class="form-label">Bukti tanda jadi (Minimal 1 Juta Rupiah)
+                        </label>
+                        @if ($order->initial_payment == null)
+                            <input type="file" class="form-control" name="initial_payment" id="initial_payment"
+                                accept="image/*">
+                            <small class="text-danger errorInitialPayment"></small>
+                        @else
+                            <div>
+                                <a href="{{ route('file.initial_payment', $order->initial_payment) }}"
+                                    target="_blank">
+                                    <img style="border-radius: 8px;"
+                                        src="{{ route('file.initial_payment', $order->initial_payment) }}"
+                                        alt="{{ $order->initial_payment }}">
+                                </a>
                             </div>
                         @endif
                     </div>
-                    @if ($order->detail_survey == null)
+                    <div class="mb-3">
+                        <label for="initial_payment" class="form-label">Status Persetujuan
+                        </label>
+                        @if (auth()->user()->role == 'admin')
+                            <select name="status_survey" id="status_survey" class="form-control">
+                                <option value="0">- Pilih Status -</option>
+                                <option value="1" {{ $order->status_survey == '1' ? 'selected' : '' }}>Setuju
+                                </option>
+                                <option value="2" {{ $order->status_survey == '2' ? 'selected' : '' }}>Tolak
+                                </option>
+                            </select>
+                            <small class="text-danger errorInitialPayment"></small>
+                        @else
+                            <div>
+                                @if ($order->status_survey == 0)
+                                    <span class="badge bg-warning text-dark">Sedang Diproses</span>
+                                @elseif ($order->status_survey == 1)
+                                    <span class="badge bg-success">Telah Disetujui</span>
+                                @else
+                                    <span class="badge bg-danger">Telah Ditolak</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @if ($order->status_survey == 0)
                         <div class="col-lg-12 col-md-6">
                             <div class="form-group mb-3 d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary" id="save_survey">Simpan</button>
                             </div>
                         </div>
                     @endif
-                </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
 @section('script_survey')
@@ -154,14 +201,6 @@
                     },
                     success: function(response) {
                         if (response.errors) {
-                            if (response.errors.survey_photo) {
-                                $('#survey_photo').addClass('is-invalid');
-                                $('.errorSurveyPhoto').html(response.errors.survey_photo.join(
-                                    '<br>'));
-                            } else {
-                                $('#survey_photo').removeClass('is-invalid');
-                                $('.errorSurveyPhoto').html('');
-                            }
                             if (response.errors.detail_survey) {
                                 $('#detail_survey').addClass('is-invalid');
                                 $('.errorDetailSurvey').html(response.errors.detail_survey.join(
@@ -209,6 +248,87 @@
                     }
                 });
             });
+
+            $('body').on('click', '#btnDeleteSurveyPhoto', function() {
+                let id = $(this).data('idsurveyphoto');
+                Swal.fire({
+                    title: 'Hapus',
+                    text: "Apakah anda yakin?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            type: "DELETE",
+                            url: "{{ url('pemesanan/hapus/survey/foto/"+id+"') }}",
+                            data: {
+                                id: id
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.message) {
+                                    const Toast = Swal.mixin({
+                                        toast: true,
+                                        position: "top-end",
+                                        showConfirmButton: false,
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        didOpen: (toast) => {
+                                            toast.onmouseenter = Swal
+                                                .stopTimer;
+                                            toast.onmouseleave = Swal
+                                                .resumeTimer;
+                                        }
+                                    });
+                                    Toast.fire({
+                                        icon: "success",
+                                        title: response.message
+                                    });
+
+                                    $(`#btnDeleteSurveyPhoto[data-idsurveyphoto="${id}"]`)
+                                        .closest(
+                                            '.design-photo-container').remove();
+                                }
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                let errorMessage = "";
+                                if (xhr.status === 0) {
+                                    errorMessage =
+                                        "Network error, please check your internet connection.";
+                                } else if (xhr.status >= 400 && xhr.status < 500) {
+                                    errorMessage = "Client error (" + xhr.status +
+                                        "): " + xhr
+                                        .responseText;
+                                } else if (xhr.status >= 500) {
+                                    errorMessage = "Server error (" + xhr.status +
+                                        "): " + xhr
+                                        .responseText;
+                                } else {
+                                    errorMessage = "Unexpected error: " + xhr
+                                        .responseText;
+                                }
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error " + xhr.status,
+                                    html: `
+                                <strong>Status:</strong> ${xhr.status}<br>
+                                <strong>Error:</strong> ${thrownError}<br>
+                            `,
+                                });
+
+                                console.error(xhr.status + "\n" + xhr.responseText +
+                                    "\n" +
+                                    thrownError);
+                            }
+                        })
+                    }
+                })
+            })
         });
 
         CKEDITOR.ClassicEditor.create(document.getElementById("detail_survey"), {

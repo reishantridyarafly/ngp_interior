@@ -3,28 +3,44 @@
         <div class="card stretch stretch-full">
             <div class="card-header">
                 <h5 class="card-title">Kebutuhan</h5>
-                <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand" data-id="{{ $order->id }}">
-                    <i class="feather-plus me-2"></i>
-                    <span>Tambah Kebutuhan</span>
-                </button>
+                @if (auth()->user()->role == 'admin')
+                    <button type="button" id="btnAddSection" class="btn btn-md btn-light-brand"
+                        data-id="{{ $order->id }}">
+                        <i class="feather-plus me-2"></i>
+                        <span>Tambah Kebutuhan</span>
+                    </button>
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col" width="1">#</th>
+                                <th scope="col" style="text-align: center" width="1">#</th>
                                 <th scope="col">Nama Bagian</th>
                                 <th scope="col">Subtotal</th>
                                 <th scope="col">Diskon</th>
                                 <th scope="col">Total</th>
-                                <th scope="col">Aksi</th>
+                                @if (auth()->user()->role == 'admin')
+                                    <th scope="col">Aksi</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $grandSubtotal = 0;
+                                $grandDiscount = 0;
+                                $grandTotalAmount = 0;
+                            @endphp
+
                             @forelse ($orderSections as $orderSection)
+                                @php
+                                    $grandSubtotal += $orderSection->subtotal ?? 0;
+                                    $grandDiscount += $orderSection->discount ?? 0;
+                                    $grandTotalAmount += $orderSection->total_amount ?? 0;
+                                @endphp
                                 <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <th scope="row" style="text-align: center">{{ $loop->iteration }}</th>
                                     <td>{{ $orderSection->section_title }}</td>
                                     <td>{{ $orderSection->subtotal ? 'Rp ' . number_format($orderSection->subtotal, 0, ',', '.') : 0 }}
                                     </td>
@@ -32,29 +48,45 @@
                                     </td>
                                     <td>{{ $orderSection->total_amount ? 'Rp ' . number_format($orderSection->total_amount, 0, ',', '.') : 0 }}
                                     </td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <button type="button" id="btnEditSection" class="btn btn-sm btn-info me-2"
-                                                data-idsection="{{ $orderSection->id }}">Ubah
-                                                Bagian</button>
-                                            <a href="{{ route('orderItem.index', $orderSection->id) }}"
-                                                class="btn btn-sm btn-primary text-danger me-2" type="button">Item</a>
-                                            <button class="btn btn-sm bg-soft-danger text-danger"
-                                                data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
-                                                type="button">Hapus</button>
-                                        </div>
-                                    </td>
+                                    @if (auth()->user()->role == 'admin')
+                                        <td>
+                                            <div class="d-flex">
+                                                <button type="button" id="btnEditSection"
+                                                    class="btn btn-sm btn-info me-2"
+                                                    data-idsection="{{ $orderSection->id }}">Ubah Bagian</button>
+                                                <a href="{{ route('orderItem.index', $orderSection->id) }}"
+                                                    class="btn btn-sm btn-primary text-danger me-2"
+                                                    type="button">Item</a>
+                                                <button class="btn btn-sm bg-soft-danger text-danger"
+                                                    data-idsection="{{ $orderSection->id }}" id="btnDeleteSection"
+                                                    type="button">Hapus</button>
+                                            </div>
+                                        </td>
+                                    @endif
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">Data belum tersedia</td>
+                                    <td colspan="5">Data belum tersedia</td>
                                 </tr>
                             @endforelse
+
+                            @if (auth()->user()->role == 'customer')
+                                <tr>
+                                    <th colspan="2" class="text-dark text-uppercase bg-gray-100">Total Keseluruhan
+                                    </th>
+                                    <td class="text-dark bg-gray-100">
+                                        {{ 'Rp ' . number_format($grandSubtotal, 0, ',', '.') }}</td>
+                                    <td class="text-dark bg-gray-100">
+                                        {{ 'Rp ' . number_format($grandDiscount, 0, ',', '.') }}</td>
+                                    <td class="text-dark bg-gray-100">
+                                        {{ 'Rp ' . number_format($grandTotalAmount, 0, ',', '.') }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
 
-                <div class="col-lg-12 col-md-6">
+                <div class="col-lg-12 col-md-6 mt-3">
                     <form id="form_print">
                         <div class="form-group mb-3 d-flex justify-content-end">
                             <input type="hidden" name="idorder" id="idorder" value="{{ $order->id }}">
@@ -72,16 +104,19 @@
                 <h5 class="card-title">Desain</h5>
             </div>
             <div class="card-body">
-                <div class="row mb-5">
-                    <div class="col-lg-12">
-                        <label>Drag and Drop Multiple Images (JPG, JPEG, PNG, .webp)</label>
-                        <form action="{{ route('orderDesign.store') }}" method="POST" enctype="multipart/form-data"
-                            class="dropzone" id="myDragAndDropUploader">
-                            <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
-                            @csrf
-                        </form>
+                @if (auth()->user()->role == 'admin')
+                    <div class="row mb-5">
+                        <div class="col-lg-12">
+                            <label class="form-label">Upload hasil design (JPG, JPEG, PNG, .webp) <span
+                                    class="text-danger">*</span></label>
+                            <form action="{{ route('orderDesign.store') }}" method="POST"
+                                enctype="multipart/form-data" class="dropzone upload-zone">
+                                <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
+                                @csrf
+                            </form>
+                        </div>
                     </div>
-                </div>
+                @endif
                 <div class="row">
                     <style>
                         .design-photo-container {
@@ -110,70 +145,90 @@
                                 <img src="{{ route('file.design', $photo->photo_design) }}"
                                     alt="{{ $photo->photo_design }}">
                             </a>
-                            <button type="submit" class="btn btn-danger btn-sm mt-3" id="btnDelete"
-                                data-iddesign="{{ $photo->id }}">
-                                Hapus
-                            </button>
+                            @if (auth()->user()->role == 'admin')
+                                <button type="submit" class="btn btn-danger btn-sm mt-3" id="btnDelete"
+                                    data-iddesign="{{ $photo->id }}">
+                                    Hapus
+                                </button>
+                            @endif
                         </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="col-lg-12">
+        <div class="card stretch stretch-full">
+            <div class="card-header">
+                <h5 class="card-title">Revisi Desain</h5>
+                <ul>
+                    <li>DP 10% Dari penawaran harga</li>
+                    <li>Maksimal revisi yaitu 3x</li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <form id="form_revision">
+                    <div class="mb-3">
+                        <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
+                        <label for="ten_percent_payment" class="form-label">Bukti Pembayaran DP 10%</label>
+                        @if ($order->ten_percent_payment == null)
+                            <input type="file" name="ten_percent_payment" id="ten_percent_payment"
+                                class="form-control" accept="image/*">
+                            <small class="text-danger errorTenPercentPayment"></small>
+                        @else
+                            <div>
+                                <a href="{{ route('file.ten_percent_payment', $order->ten_percent_payment) }}"
+                                    target="_blank">
+                                    <img style="border-radius: 8px;"
+                                        src="{{ route('file.ten_percent_payment', $order->ten_percent_payment) }}"
+                                        alt="{{ $order->ten_percent_payment }}">
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mb-3">
+                        <label for="revision" class="form-label">Revisi</label>
+                        <textarea name="revision" id="revision" rows="3" class="form-control">{{ $order->revision ?? null }}</textarea>
+                        <small class="text-danger errorRevisionText"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status Persetujuan
+                        </label>
+                        @if (auth()->user()->role == 'admin')
+                            <select name="status_design" id="status_design" class="form-control">
+                                <option value="0">- Pilih Status -</option>
+                                <option value="1" {{ $order->status_design == '1' ? 'selected' : '' }}>Setuju
+                                </option>
+                                <option value="2" {{ $order->status_design == '2' ? 'selected' : '' }}>Tolak
+                                </option>
+                            </select>
+                            <small class="text-danger errorInitialPayment"></small>
+                        @else
+                            <div>
+                                @if ($order->status_design == 0)
+                                    <span class="badge bg-warning text-dark">Sedang Diproses</span>
+                                @elseif ($order->status_design == 1)
+                                    <span class="badge bg-success">Telah Disetujui</span>
+                                @else
+                                    <span class="badge bg-danger">Telah Ditolak</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @if ($order->status_design == 0)
+                        <div class="col-lg-12 col-md-6">
+                            <div class="form-group mb-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="save_revision">Simpan</button>
+                            </div>
+                        </div>
+                    @endif
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js"></script>
-
-<script>
-    var maxFilesizeVal = 12;
-    var maxFilesVal = 2;
-
-    Dropzone.options.myDragAndDropUploader = {
-        paramName: "file",
-        maxFilesize: maxFilesizeVal,
-        maxFiles: maxFilesVal,
-        resizeQuality: 1.0,
-        acceptedFiles: ".jpeg,.jpg,.png,.webp",
-        addRemoveLinks: true,
-        timeout: 60000,
-        dictDefaultMessage: "Letakkan file Anda di sini atau klik untuk mengunggah.",
-        dictFallbackMessage: "Browser Anda tidak mendukung unggahan file dengan cara seret dan lepas.",
-        dictFileTooBig: "File terlalu besar. Ukuran file maksimum: " + maxFilesizeVal + "MB.",
-        dictInvalidFileType: "Jenis file tidak valid. Hanya file JPG, JPEG, PNG, dan GIF yang diperbolehkan.",
-        dictMaxFilesExceeded: "Anda hanya dapat mengunggah hingga " + maxFilesVal + " file.",
-        maxfilesexceeded: function(file) {
-            this.removeFile(file);
-        },
-        sending: function(file, xhr, formData) {
-            Swal.fire({
-                title: 'Uploading...',
-                html: 'Sedang mengunggah gambar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-        },
-        success: function(file, response) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses',
-                text: response.message,
-            }).then(function() {
-                location.reload();
-            });
-        },
-        error: function(file, response) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: response,
-            });
-            return false;
-        }
-    };
-</script>
 
 @section('script_design')
     <!-- modal -->
@@ -208,6 +263,8 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/38.0.1/super-build/ckeditor.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -526,6 +583,246 @@
                     }
                 })
             })
+
+            $('#form_revision').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    data: new FormData(this),
+                    url: "{{ route('orderDesign.store_revision') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    beforeSend: function() {
+                        $('#save_revision').attr('disable', 'disabled');
+                        $('#save_revision').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#save_revision').removeAttr('disable');
+                        $('#save_revision').html('Simpan');
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: response.success,
+                        }).then(function() {
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+
+                        let errorMessage = "";
+                        if (xhr.status === 0) {
+                            errorMessage =
+                                "Network error, please check your internet connection.";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = "Client error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = "Server error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else {
+                            errorMessage = "Unexpected error: " + xhr.responseText;
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error " + xhr.status,
+                            html: `
+                                <strong>Status:</strong> ${xhr.status}<br>
+                                <strong>Error:</strong> ${thrownError}<br>
+                            `,
+                        });
+                    }
+                });
+            });
+
+            CKEDITOR.ClassicEditor.create(document.getElementById("revision"), {
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#extended-toolbar-configuration-format
+                    toolbar: {
+                        items: [
+                            'findAndReplace', 'selectAll', '|',
+                            'heading', '|',
+                            'bold', 'italic', 'strikethrough', 'underline',
+                            'removeFormat', '|',
+                            'bulletedList', 'numberedList', 'todoList', '|',
+                            'outdent', 'indent', '|',
+                            'undo', 'redo',
+                            '-',
+                            'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                            'alignment', '|',
+                            'link', 'blockQuote', 'insertTable',
+                            '|',
+                            'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                        ],
+                        shouldNotGroupWhenFull: true
+                    },
+                    // Changing the language of the interface requires loading the language file using the <script> tag.
+                    // language: 'es',
+                    list: {
+                        properties: {
+                            styles: true,
+                            startIndex: true,
+                            reversed: true
+                        }
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#configuration
+                    heading: {
+                        options: [{
+                                model: 'paragraph',
+                                title: 'Paragraph',
+                                class: 'ck-heading_paragraph'
+                            },
+                            {
+                                model: 'heading1',
+                                view: 'h1',
+                                title: 'Heading 1',
+                                class: 'ck-heading_heading1'
+                            },
+                            {
+                                model: 'heading2',
+                                view: 'h2',
+                                title: 'Heading 2',
+                                class: 'ck-heading_heading2'
+                            },
+                            {
+                                model: 'heading3',
+                                view: 'h3',
+                                title: 'Heading 3',
+                                class: 'ck-heading_heading3'
+                            },
+                            {
+                                model: 'heading4',
+                                view: 'h4',
+                                title: 'Heading 4',
+                                class: 'ck-heading_heading4'
+                            },
+                            {
+                                model: 'heading5',
+                                view: 'h5',
+                                title: 'Heading 5',
+                                class: 'ck-heading_heading5'
+                            },
+                            {
+                                model: 'heading6',
+                                view: 'h6',
+                                title: 'Heading 6',
+                                class: 'ck-heading_heading6'
+                            }
+                        ]
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
+                    fontFamily: {
+                        options: [
+                            'default',
+                            'Arial, Helvetica, sans-serif',
+                            'Courier New, Courier, monospace',
+                            'Georgia, serif',
+                            'Lucida Sans Unicode, Lucida Grande, sans-serif',
+                            'Tahoma, Geneva, sans-serif',
+                            'Times New Roman, Times, serif',
+                            'Trebuchet MS, Helvetica, sans-serif',
+                            'Verdana, Geneva, sans-serif'
+                        ],
+                        supportAllValues: true
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-size-feature
+                    fontSize: {
+                        options: [10, 12, 14, 'default', 18, 20, 22],
+                        supportAllValues: true
+                    },
+                    // Be careful with the setting below. It instructs CKEditor to accept ALL HTML markup.
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#enabling-all-html-features
+                    htmlSupport: {
+                        allow: [{
+                            name: /.*/,
+                            attributes: true,
+                            classes: true,
+                            styles: true
+                        }]
+                    },
+                    // Be careful with enabling previews
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#content-previews
+                    htmlEmbed: {
+                        showPreviews: true
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/link.html#custom-link-attributes-decorators
+                    link: {
+                        decorators: {
+                            addTargetToExternalLinks: true,
+                            defaultProtocol: 'https://',
+                            toggleDownloadable: {
+                                mode: 'manual',
+                                label: 'Downloadable',
+                                attributes: {
+                                    download: 'file'
+                                }
+                            }
+                        }
+                    },
+                    // https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#configuration
+                    mention: {
+                        feeds: [{
+                            marker: '@',
+                            feed: [
+                                '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy',
+                                '@canes',
+                                '@chocolate', '@cookie', '@cotton', '@cream',
+                                '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake',
+                                '@gingerbread',
+                                '@gummi', '@ice', '@jelly-o',
+                                '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum',
+                                '@pudding',
+                                '@sesame', '@snaps', '@soufflé',
+                                '@sugar', '@sweet', '@topping', '@wafer'
+                            ],
+                            minimumCharacters: 1
+                        }]
+                    },
+                    // The "super-build" contains more premium features that require additional configuration, disable them below.
+                    // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
+                    removePlugins: [
+                        // These two are commercial, but you can try them out without registering to a trial.
+                        // 'ExportPdf',
+                        // 'ExportWord',
+                        'CKBox',
+                        'CKFinder',
+                        'EasyImage',
+                        // This sample uses the Base64UploadAdapter to handle image uploads as it requires no configuration.
+                        // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/base64-upload-adapter.html
+                        // Storing images as Base64 is usually a very bad idea.
+                        // Replace it on production website with other solutions:
+                        // https://ckeditor.com/docs/ckeditor5/latest/features/images/image-upload/image-upload.html
+                        // 'Base64UploadAdapter',
+                        'RealTimeCollaborativeComments',
+                        'RealTimeCollaborativeTrackChanges',
+                        'RealTimeCollaborativeRevisionHistory',
+                        'PresenceList',
+                        'Comments',
+                        'TrackChanges',
+                        'TrackChangesData',
+                        'RevisionHistory',
+                        'Pagination',
+                        'WProofreader',
+                        // Careful, with the Mathtype plugin CKEditor will not load when loading this sample
+                        // from a local file system (file://) - load     this site via HTTP server if you enable MathType.
+                        'MathType',
+                        // The following features are part of the Productivity Pack and require additional license.
+                        'SlashCommand',
+                        'Template',
+                        'DocumentOutline',
+                        'FormatPainter',
+                        'TableOfContents'
+                    ]
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         });
     </script>
 @endsection

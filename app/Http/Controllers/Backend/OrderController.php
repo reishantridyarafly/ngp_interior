@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderSection;
+use App\Models\SurveyPhoto;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -17,7 +19,11 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
+            if (Auth::user()->role == 'admin') {
+                $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
+            } else {
+                $orders = Order::with('user')->orderBy('invoice', 'asc')->where('user_id', Auth::user()->id)->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
+            }
             return DataTables::of($orders)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
@@ -39,14 +45,10 @@ class OrderController extends Controller
                     return Carbon::parse($data->order_date)->locale('id')->isoFormat('dddd, D MMMM YYYY');
                 })
                 ->addColumn('action', function ($data) {
-                    return '
-                        <div class="hstack gap-2 justify-content-end">
-                            <div class="dropdown">
-                                <a href="javascript:void(0)" class="avatar-text avatar-md" data-bs-toggle="dropdown" data-bs-offset="0,21">
-                                    <i class="feather feather-more-horizontal"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li>
+                    $action = '';
+
+                    if (Auth::user()->role == 'admin') {
+                        $action = '<li>
                                         <a href="' . route('order.detail', $data->invoice) . '" class="dropdown-item">
                                             <i class="feather feather-eye me-3"></i>
                                             <span>Detail</span>
@@ -63,7 +65,23 @@ class OrderController extends Controller
                                             <i class="feather feather-trash-2 me-3"></i>
                                             <span>Hapus</span>
                                         </button>
-                                    </li>
+                                    </li>';
+                    } else {
+                        $action = '<li>
+                                        <a href="' . route('order.detail', $data->invoice) . '" class="dropdown-item">
+                                            <i class="feather feather-eye me-3"></i>
+                                            <span>Detail</span>
+                                        </a>
+                                    </li>';
+                    }
+                    return '
+                        <div class="hstack gap-2 justify-content-end">
+                            <div class="dropdown">
+                                <a href="javascript:void(0)" class="avatar-text avatar-md" data-bs-toggle="dropdown" data-bs-offset="0,21">
+                                    <i class="feather feather-more-horizontal"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    ' . $action . '
                                 </ul>
                             </div>
                         </div>';
@@ -157,6 +175,14 @@ class OrderController extends Controller
     public function destroy(Request $request)
     {
         $order = Order::findOrFail($request->id);
+        if ($order->initial_payment) {
+            $photoPath = storage_path("app/private/uploads/initial_payment/{$order->initial_payment}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
         $surveyPhotos = $order->survey_photos;
         foreach ($surveyPhotos as $photo) {
             $photoPath = storage_path("app/private/uploads/survey/{$photo->photo_name}");
@@ -165,7 +191,17 @@ class OrderController extends Controller
                 unlink($photoPath);
             }
         }
+
+        $designPhotos = $order->design_photos;
+        foreach ($designPhotos as $photo) {
+            $photoPath = storage_path("app/private/uploads/design/{$photo->photo_design}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
         $order->survey_photos()->delete();
+        $order->design_photos()->delete();
         $order->delete();
 
         return response()->json(['message' => 'Data berhasil dihapus']);
@@ -183,21 +219,23 @@ class OrderController extends Controller
 
     public function store_survey(Request $request)
     {
+        $rules = [
+            'initial_payment' => 'image|mimes:jpg,png,jpeg,webp,svg|file|max:5120',
+        ];
+
+        if (Auth::user()->role == 'admin') {
+            $rules['detail_survey'] = 'required';
+        }
+
         $validated = Validator::make(
             $request->all(),
+            $rules,
             [
-                'survey_photo' => 'required|max:5120',
-                'survey_photo.*' => 'image|mimes:jpg,png,jpeg,webp,svg|file|max:5120',
-                'detail_survey' => 'required',
-
-            ],
-            [
-                'survey_photo.required' => 'Silakan isi foto terlebih dahulu.',
-                'survey_photo.image' => 'File harus berupa gambar.',
-                'survey_photo.mimes' => 'Ekstensi file harus berupa: jpg, png, jpeg, webp, atau svg.',
-                'survey_photo.file' => 'File harus berupa gambar.',
-                'survey_photo.max' => 'Ukuran file tidak boleh lebih dari 5 MB.',
                 'detail_survey.required' => 'Silakan isi detail terlebih dahulu.',
+                'initial_payment.image' => 'File harus berupa gambar.',
+                'initial_payment.mimes' => 'Ekstensi file harus berupa: jpg, png, jpeg, webp, atau svg.',
+                'initial_payment.file' => 'File harus berupa gambar.',
+                'initial_payment.max' => 'Ukuran file tidak boleh lebih dari 5 MB.',
             ]
         );
 
@@ -206,17 +244,24 @@ class OrderController extends Controller
         } else {
             try {
                 $order = Order::find($request->id);
-                $order->detail_survey = $request->detail_survey;
-                $order->status_survey = 1;
-                $order->save();
-
-                if ($request->hasFile('survey_photo')) {
-                    foreach ($request->file('survey_photo') as $image) {
-                        $imageName =  time() . '_survey_' . $image->getClientOriginalName();
-                        Storage::putFileAs('uploads/survey', $image, $imageName);
-                        $order->survey_photos()->create(['photo_name' => $imageName]);
-                    }
+                if (Auth::user()->role == 'admin') {
+                    $order->detail_survey = $request->detail_survey;
                 }
+
+                if ($request->hasFile('initial_payment')) {
+                    $photo = $request->file('initial_payment');
+                    $photoName = time() . '_initial_payment_' . $photo->getClientOriginalName();
+                    Storage::putFileAs('uploads/initial_payment', $photo, $photoName);
+                    $order->initial_payment = $photoName;
+                }
+
+                if ($request->status_survey == '') {
+                    $order->status_survey = 0;
+                } else {
+                    $order->status_survey = $request->status_survey;
+                }
+
+                $order->save();
 
                 return response()->json(['success' => 'Data berhasil disimpan']);
             } catch (\Exception $e) {
@@ -226,6 +271,52 @@ class OrderController extends Controller
                     'error' => $e->getMessage()
                 ], 500);
             }
+        }
+    }
+
+    public function store_image_survey(Request $request)
+    {
+        $order = Order::find($request->id_order);
+
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $imageName = $order->invoice . '_survey_' . uniqid() . '_' . $file->getClientOriginalName();
+            $uploadPath = 'uploads/survey';
+            Storage::putFileAs($uploadPath, $file, $imageName);
+
+            $surveyPhoto = SurveyPhoto::create([
+                'photo_name' => $imageName,
+                'order_id' => $request->id_order
+            ]);
+
+            return response()->json([
+                'message' => 'Design berhasil diupload!',
+                'id' => $surveyPhoto->id,
+                'photo_name' =>  $imageName,
+            ]);
+        } else {
+            return response()->json(['error' => 'File upload failed.']);
+        }
+    }
+
+    public function destroy_image_survey(Request $request)
+    {
+        try {
+            $survey_photo = SurveyPhoto::find($request->id);
+            if ($survey_photo) {
+                if ($survey_photo->photo_name) {
+                    Storage::disk('private')->delete('uploads/survey/' . $survey_photo->photo_name);
+                }
+
+                $survey_photo->delete();
+                return response()->json(['message' => 'Data berhasil dihapus']);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 

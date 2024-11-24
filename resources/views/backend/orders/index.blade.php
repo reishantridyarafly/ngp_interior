@@ -22,12 +22,14 @@
                                 <span>Kembali</span>
                             </a>
                         </div>
-                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                            <button class="btn btn-primary" id="btnAdd">
-                                <i class="feather-plus me-2"></i>
-                                <span>Tambah @yield('title')</span>
-                            </button>
-                        </div>
+                        @if (auth()->user()->role == 'admin')
+                            <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                                <button class="btn btn-primary" id="btnAdd">
+                                    <i class="feather-plus me-2"></i>
+                                    <span>Tambah @yield('title')</span>
+                                </button>
+                            </div>
+                        @endif
                     </div>
                     <div class="d-md-none d-flex align-items-center">
                         <a href="javascript:void(0)" class="page-header-right-open-toggle">
@@ -414,4 +416,3 @@
         });
     </script>
 @endsection
-

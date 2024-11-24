@@ -79,6 +79,11 @@
             <!-- [ Main Content ] start -->
             <div class="main-content">
                 <div class="col-12">
+                    @if ($order->status_survey == 2)
+                        <div class="alert alert-danger">
+                            Proses survei Anda telah ditolak. Silakan hubungi admin untuk informasi lebih lanjut.
+                        </div>
+                    @endif
                     <div class="card stretch stretch-full">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
@@ -171,6 +176,58 @@
             <!-- [ Main Content ] end -->
         </div>
     </main>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js"></script>
+
+    <script>
+        var dropzones = document.querySelectorAll(".upload-zone");
+        var maxFilesizeVal = 12;
+        var maxFilesVal = 10;
+
+        dropzones.forEach(function(element, index) {
+            new Dropzone(element, {
+                paramName: "file",
+                maxFilesize: maxFilesizeVal,
+                maxFiles: maxFilesVal,
+                resizeQuality: 1.0,
+                acceptedFiles: ".jpeg,.jpg,.png,.webp",
+                addRemoveLinks: true,
+                timeout: 60000,
+                dictDefaultMessage: "Letakkan file Anda di sini atau klik untuk mengunggah.",
+                dictFallbackMessage: "Browser Anda tidak mendukung unggahan file dengan cara seret dan lepas.",
+                dictFileTooBig: "File terlalu besar. Ukuran file maksimum: " + maxFilesizeVal + "MB.",
+                dictInvalidFileType: "Jenis file tidak valid. Hanya file JPG, JPEG, PNG, dan GIF yang diperbolehkan.",
+                dictMaxFilesExceeded: "Anda hanya dapat mengunggah hingga " + maxFilesVal + " file.",
+                maxfilesexceeded: function(file) {
+                    this.removeFile(file);
+                },
+                sending: function(file, xhr, formData) {
+                    Swal.fire({
+                        title: 'Uploading...',
+                        html: 'Sedang mengunggah gambar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                },
+                success: function(file, response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message,
+                    }).then(function() {
+                        location.reload();
+                    });
+                },
+                error: function(file, response) {
+                    $('.errorPhotoSurvey').text(response);
+                    return false;
+                }
+            });
+        });
+    </script>
 
     @yield('script_survey')
     @yield('script_design')

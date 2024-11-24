@@ -19,30 +19,36 @@
                         <span class="nxl-mtext">Dashboard</span>
                     </a>
                 </li>
-                <li class="nxl-item {{ request()->routeIs(['category.*']) ? 'active' : '' }}">
-                    <a href="{{ route('category.index') }}" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-archive"></i></span>
-                        <span class="nxl-mtext">Kategori</span>
-                    </a>
-                </li>
+                @if (auth()->user()->role == 'admin')
+                    <li class="nxl-item {{ request()->routeIs(['category.*']) ? 'active' : '' }}">
+                        <a href="{{ route('category.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-archive"></i></span>
+                            <span class="nxl-mtext">Kategori</span>
+                        </a>
+                    </li>
+                @endif
+
                 <li class="nxl-item {{ request()->routeIs(['order.*', 'orderItem.*']) ? 'active' : '' }}">
                     <a href="{{ route('order.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-dollar-sign"></i></span>
                         <span class="nxl-mtext">Pemesanan</span>
                     </a>
                 </li>
-                <li class="nxl-item {{ request()->routeIs(['customers.*']) ? 'active' : '' }}">
-                    <a href="{{ route('customers.index') }}" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-users"></i></span>
-                        <span class="nxl-mtext">Pelanggan</span>
-                    </a>
-                </li>
-                <li class="nxl-item {{ request()->routeIs(['project.*']) ? 'active' : '' }}">
-                    <a href="{{ route('project.index') }}" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-server"></i></span>
-                        <span class="nxl-mtext">Proyek</span>
-                    </a>
-                </li>
+                @if (auth()->user()->role == 'admin')
+                    <li class="nxl-item {{ request()->routeIs(['customers.*']) ? 'active' : '' }}">
+                        <a href="{{ route('customers.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                            <span class="nxl-mtext">Pelanggan</span>
+                        </a>
+                    </li>
+
+                    <li class="nxl-item {{ request()->routeIs(['project.*']) ? 'active' : '' }}">
+                        <a href="{{ route('project.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-server"></i></span>
+                            <span class="nxl-mtext">Proyek</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="nxl-item {{ request()->routeIs(['profile.*']) ? 'active' : '' }}">
                     <a href="{{ route('profile.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-settings"></i></span>

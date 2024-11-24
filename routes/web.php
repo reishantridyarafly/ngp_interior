@@ -16,6 +16,41 @@ Route::get('/kontak', [App\Http\Controllers\Frontend\ContactController::class, '
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
 
+    Route::get('/profile', [App\Http\Controllers\Backend\ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/ubah/password', [App\Http\Controllers\Backend\ProfileController::class, 'changePassword'])->name('profile.changePassword');
+    Route::post('/profile/pengaturan/', [App\Http\Controllers\Backend\ProfileController::class, 'settingsProfile'])->name('profile.settings');
+    Route::post('/profile/pengaturan/hapus-foto', [App\Http\Controllers\Backend\ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
+    Route::post('/profile/hapus/akun', [App\Http\Controllers\Backend\ProfileController::class, 'deleteAccount'])->name('profile.deleteAccount');
+
+    Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
+    Route::get('/pemesanan/{invoice}/detail', [App\Http\Controllers\Backend\OrderController::class, 'detail'])->name('order.detail');
+
+    Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
+    Route::post('/pemesanan/tambah/pesanan', [App\Http\Controllers\Backend\OrderController::class, 'store_order'])->name('order.store_order');
+    Route::get('/pemesanan/{invoice}/detail', [App\Http\Controllers\Backend\OrderController::class, 'detail'])->name('order.detail');
+    Route::get('/pemesanan/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->name('order.edit');
+    Route::delete('/pemesanan/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy'])->name('order.destroy');
+
+    Route::post('/pemesanan/tambah/survei', [App\Http\Controllers\Backend\OrderController::class, 'store_survey'])->name('order.store_survey');
+    Route::post('/pemesanan/tambah/survei/foto', [App\Http\Controllers\Backend\OrderController::class, 'store_image_survey'])->name('order.store_image_survey');
+    Route::delete('/pemesanan/hapus/survey/foto/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy_image_survey'])->name('order.destroy_image_survey');
+
+    Route::post('/pemesanan/bagian', [App\Http\Controllers\Backend\OrderController::class, 'store_section'])->name('order.store_section');
+    Route::get('/pemesanan/bagian/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit_section'])->name('order.edit_section');
+    Route::delete('/pemesanan/bagian/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy_section'])->name('order.destroy_section');
+
+    Route::get('/pemesanan/item/{idSection}/', [App\Http\Controllers\Backend\OrderItemController::class, 'index'])->name('orderItem.index');
+    Route::post('/pemesanan/item/', [App\Http\Controllers\Backend\OrderItemController::class, 'store'])->name('orderItem.store');
+
+    Route::get('/pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
+
+    Route::get('/pemesanan/desain/tambah/{invoice}', [App\Http\Controllers\Backend\OrderDesignController::class, 'create'])->name('orderDesign.create');
+    Route::post('/pemesanan/desain/tambah', [App\Http\Controllers\Backend\OrderDesignController::class, 'store'])->name('orderDesign.store');
+    Route::post('/pemesanan/desain/tambah/revisi', [App\Http\Controllers\Backend\OrderDesignController::class, 'store_revision'])->name('orderDesign.store_revision');
+    Route::delete('/pemesanan/design/{id}', [App\Http\Controllers\Backend\OrderDesignController::class, 'destroy'])->name('orderDesign.destroy');
+});
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/proyek', [App\Http\Controllers\Backend\ProjectController::class, 'index'])->name('project.index');
     Route::get('/proyek/tambah', [App\Http\Controllers\Backend\ProjectController::class, 'create'])->name('project.create');
     Route::post('/proyek', [App\Http\Controllers\Backend\ProjectController::class, 'store'])->name('project.store');
@@ -23,12 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/proyek/{id}/edit', [App\Http\Controllers\Backend\ProjectController::class, 'edit'])->name('project.edit');
     Route::post('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'update'])->name('project.update');
     Route::delete('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'destroy'])->name('project.destroy');
-
-    Route::get('/profile', [App\Http\Controllers\Backend\ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile/ubah/password', [App\Http\Controllers\Backend\ProfileController::class, 'changePassword'])->name('profile.changePassword');
-    Route::post('/profile/pengaturan/', [App\Http\Controllers\Backend\ProfileController::class, 'settingsProfile'])->name('profile.settings');
-    Route::post('/profile/pengaturan/hapus-foto', [App\Http\Controllers\Backend\ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
-    Route::post('/profile/hapus/akun', [App\Http\Controllers\Backend\ProfileController::class, 'deleteAccount'])->name('profile.deleteAccount');
 
     Route::get('/kategori', [App\Http\Controllers\Backend\CategoryController::class, 'index'])->name('category.index');
     Route::get('/kategori/tambah', [App\Http\Controllers\Backend\CategoryController::class, 'create'])->name('category.create');
@@ -42,45 +71,49 @@ Route::middleware('auth')->group(function () {
     Route::get('/pelanggan/{id}/edit', [App\Http\Controllers\Backend\CustomersController::class, 'edit'])->name('customers.edit');
     Route::delete('/pelanggan/{id}', [App\Http\Controllers\Backend\CustomersController::class, 'destroy'])->name('customers.destroy');
 
-    Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
     Route::post('/pemesanan/tambah/pesanan', [App\Http\Controllers\Backend\OrderController::class, 'store_order'])->name('order.store_order');
-    Route::post('/pemesanan/tambah/survei', [App\Http\Controllers\Backend\OrderController::class, 'store_survey'])->name('order.store_survey');
-    Route::get('/pemesanan/{invoice}/detail', [App\Http\Controllers\Backend\OrderController::class, 'detail'])->name('order.detail');
     Route::get('/pemesanan/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->name('order.edit');
     Route::delete('/pemesanan/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy'])->name('order.destroy');
-
-    Route::post('/pemesanan/bagian', [App\Http\Controllers\Backend\OrderController::class, 'store_section'])->name('order.store_section');
-    Route::get('/pemesanan/bagian/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit_section'])->name('order.edit_section');
-    Route::delete('/pemesanan/bagian/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy_section'])->name('order.destroy_section');
-
-    Route::get('/pemesanan/item/{idSection}/', [App\Http\Controllers\Backend\OrderItemController::class, 'index'])->name('orderItem.index');
-    Route::post('/pemesanan/item/', [App\Http\Controllers\Backend\OrderItemController::class, 'store'])->name('orderItem.store');
-
-    Route::get('/pemesanan/rab/print', [App\Http\Controllers\Print\RABController::class, 'index'])->name('printRAB.index');
-
-    Route::get('/pemesanan/desain/tambah/{invoice}', [App\Http\Controllers\Backend\OrderDesignController::class, 'create'])->name('orderDesign.create');
-    Route::post('/pemesanan/desain/tambah', [App\Http\Controllers\Backend\OrderDesignController::class, 'store'])->name('orderDesign.store');
-    Route::delete('/pemesanan/design/{id}', [App\Http\Controllers\Backend\OrderDesignController::class, 'destroy'])->name('orderDesign.destroy');
-
-    Route::get('/file/survey/{filename}', function ($filename) {
-        $path = 'uploads/survey/' . $filename;
-
-        if (Storage::disk('private')->exists($path)) {
-            return response()->file(storage_path('app/private/' . $path));
-        }
-
-        abort(404);
-    })->name('file.survey');
-
-    Route::get('/file/design/{filename}', function ($filename) {
-        $path = 'uploads/design/' . $filename;
-
-        if (Storage::disk('private')->exists($path)) {
-            return response()->file(storage_path('app/private/' . $path));
-        }
-
-        abort(404);
-    })->name('file.design');
 });
+
+Route::get('/file/survey/{filename}', function ($filename) {
+    $path = 'uploads/survey/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.survey');
+
+Route::get('/file/pembayaran/pertama/{filename}', function ($filename) {
+    $path = 'uploads/initial_payment/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.initial_payment');
+
+Route::get('/file/pembayaran/kedua/{filename}', function ($filename) {
+    $path = 'uploads/ten_percent_payment/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.ten_percent_payment');
+
+Route::get('/file/design/{filename}', function ($filename) {
+    $path = 'uploads/design/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.design');
 
 require __DIR__ . '/auth.php';
