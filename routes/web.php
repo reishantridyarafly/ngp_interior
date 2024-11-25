@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/pemesanan/desain/tambah', [App\Http\Controllers\Backend\OrderDesignController::class, 'store'])->name('orderDesign.store');
     Route::post('/pemesanan/desain/tambah/revisi', [App\Http\Controllers\Backend\OrderDesignController::class, 'store_revision'])->name('orderDesign.store_revision');
     Route::delete('/pemesanan/design/{id}', [App\Http\Controllers\Backend\OrderDesignController::class, 'destroy'])->name('orderDesign.destroy');
+
+    Route::post('/pemesanan/persetujuan/pesanan', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'store'])->name('orderApprove.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -74,6 +76,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/pemesanan/tambah/pesanan', [App\Http\Controllers\Backend\OrderController::class, 'store_order'])->name('order.store_order');
     Route::get('/pemesanan/{id}/edit', [App\Http\Controllers\Backend\OrderController::class, 'edit'])->name('order.edit');
     Route::delete('/pemesanan/{id}', [App\Http\Controllers\Backend\OrderController::class, 'destroy'])->name('order.destroy');
+
+    Route::post('/pemesanan/persetujuan/gambar', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'store_photos'])->name('orderApprove.store_photos');
+    Route::delete('/pemesanan/persetujuan/{id}', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'destroy'])->name('orderApprove.destroy');
 });
 
 Route::get('/file/survey/{filename}', function ($filename) {
@@ -106,6 +111,16 @@ Route::get('/file/pembayaran/kedua/{filename}', function ($filename) {
     abort(404);
 })->name('file.ten_percent_payment');
 
+Route::get('/file/pembayaran/ketiga/{filename}', function ($filename) {
+    $path = 'uploads/fifty_percent_payment/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.fifty_percent_payment');
+
 Route::get('/file/design/{filename}', function ($filename) {
     $path = 'uploads/design/' . $filename;
 
@@ -115,5 +130,15 @@ Route::get('/file/design/{filename}', function ($filename) {
 
     abort(404);
 })->name('file.design');
+
+Route::get('/file/working/{filename}', function ($filename) {
+    $path = 'uploads/working/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.working');
 
 require __DIR__ . '/auth.php';

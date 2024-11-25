@@ -115,22 +115,7 @@
 
                     <div class="tab-pane fade {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
                         id="appropvalTab">
-                        <div class="card stretch stretch-full">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center"
-                                    style="height: calc(100vh - 315px)">
-                                    <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">Approval!</h2>
-                                        <p class="fs-12 text-muted">There is no timesheets on this project</p>
-                                        <a href="javascript:void(0);"
-                                            class="avatar-text bg-soft-primary text-primary mx-auto"
-                                            data-bs-toggle="tooltip" title="Create Timesheets">
-                                            <i class="feather-plus"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @include('backend.orders.subdetail.approval')
                     </div>
                     <div class="tab-pane fade {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
                         id="productionTab">
@@ -231,4 +216,5 @@
 
     @yield('script_survey')
     @yield('script_design')
+    @yield('script_approve')
 @endsection
