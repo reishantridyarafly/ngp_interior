@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class InstallationPhoto extends Model
+class ProductionPhoto extends Model
 {
     use HasFactory;
 

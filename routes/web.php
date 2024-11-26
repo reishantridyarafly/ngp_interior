@@ -79,6 +79,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/pemesanan/persetujuan/gambar', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'store_photos'])->name('orderApprove.store_photos');
     Route::delete('/pemesanan/persetujuan/{id}', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'destroy'])->name('orderApprove.destroy');
+
+    Route::post('/pemesanan/produksi/gambar', [App\Http\Controllers\Backend\OrderProductionController::class, 'store_photos'])->name('orderProduction.store_photos');
+    Route::delete('/pemesanan/produksi/{id}', [App\Http\Controllers\Backend\OrderProductionController::class, 'destroy'])->name('orderProduction.destroy');
 });
 
 Route::get('/file/survey/{filename}', function ($filename) {
@@ -140,5 +143,15 @@ Route::get('/file/working/{filename}', function ($filename) {
 
     abort(404);
 })->name('file.working');
+
+Route::get('/file/production/{filename}', function ($filename) {
+    $path = 'uploads/production/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.production');
 
 require __DIR__ . '/auth.php';

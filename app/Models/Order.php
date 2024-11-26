@@ -59,8 +59,8 @@ class Order extends Model
         return $this->hasMany(WorkingPicture::class);
     }
 
-    public function installation_photos()
+    public function production_photos()
     {
-        return $this->hasMany(InstallationPhoto::class);
+        return $this->hasMany(ProductionPhoto::class);
     }
 }

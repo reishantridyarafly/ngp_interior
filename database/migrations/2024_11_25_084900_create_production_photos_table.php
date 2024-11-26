@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('installation_photos', function (Blueprint $table) {
+        Schema::create('production_photos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('photo_installation');
+            $table->string('photo_production');
             $table->uuid('order_id');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->timestamps();
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('installation_photos');
+        Schema::dropIfExists('production_photos');
     }
 };
