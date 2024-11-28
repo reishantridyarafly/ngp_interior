@@ -19,7 +19,6 @@ return new class extends Migration
             $table->decimal('price', 15, 2)->nullable();
             $table->string('photo');
             $table->string('customer_name', 100)->nullable();
-            $table->string('status')->default('pending')->comment('pending, process, completed, failed');
             $table->uuid('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();

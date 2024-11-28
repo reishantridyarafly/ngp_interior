@@ -7,10 +7,8 @@ Route::get('/', [App\Http\Controllers\Frontend\BerandaController::class, 'index'
 Route::get('/tentang', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about.index');
 
 Route::get('/proyek-ngp', [App\Http\Controllers\Frontend\ProjectController::class, 'index'])->name('project-ngp.index');
-Route::get('/proyek-ngp/detail', [App\Http\Controllers\Frontend\ProjectController::class, 'detail'])->name('project-ngp.detail');
+Route::get('/proyek-ngp/detail/{slug}', [App\Http\Controllers\Frontend\ProjectController::class, 'detail'])->name('project-ngp.detail');
 
-Route::get('/properti', [App\Http\Controllers\Frontend\PropertyController::class, 'index'])->name('property.index');
-Route::get('/keranjang', [App\Http\Controllers\Frontend\CartController::class, 'index'])->name('cart.index');
 Route::get('/kontak', [App\Http\Controllers\Frontend\ContactController::class, 'index'])->name('contact.index');
 
 Route::middleware('auth')->group(function () {
@@ -167,5 +165,15 @@ Route::get('/file/last_payment/{filename}', function ($filename) {
 
     abort(404);
 })->name('file.last_payment');
+
+Route::get('/file/project/{filename}', function ($filename) {
+    $path = 'uploads/project/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.project');
 
 require __DIR__ . '/auth.php';

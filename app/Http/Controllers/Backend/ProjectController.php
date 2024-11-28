@@ -27,16 +27,6 @@ class ProjectController extends Controller
                 ->addColumn('price', function ($data) {
                     return 'Ro ' . number_format($data->price, 0, ',', '.');
                 })
-                ->addColumn('status', function ($data) {
-                    return '
-                        <select class="form-control select-status" data-select2-selector="status" data-id="' . $data->id . '">
-                            <option value="pending" ' . ($data->status == "pending" ? 'selected' : '') . '>Pending</option>
-                            <option value="process" ' . ($data->status == "process" ? 'selected' : '') . '>Proses</option>
-                            <option value="complated" ' . ($data->status == "complated" ? 'selected' : '') . '>Selesai</option>
-                            <option value="failed" ' . ($data->status == "failed" ? 'selected' : '') . '>Gagal</option>
-                        </select>
-                    ';
-                })
                 ->addColumn('action', function ($data) {
                     return '
                         <div class="hstack gap-2 justify-content-end">
@@ -79,9 +69,9 @@ class ProjectController extends Controller
             $request->all(),
             [
                 'name' => 'required|string|unique:projects,name',
-                'price' => 'required',
                 'customer_name' => 'required',
                 'category' => 'required',
+                'address' => 'required',
                 'description' => 'required',
                 'photo' => 'required|mimes:jpg,png,jpeg,webp,svg|file|max:5120',
             ],
@@ -92,6 +82,7 @@ class ProjectController extends Controller
                 'price.required' => 'Silakan isi harga terlebih dahulu.',
                 'customer_name.required' => 'Silakan pilih nama pelanggan terlebih dahulu.',
                 'category.required' => 'Silakan pilih kategori terlebih dahulu.',
+                'address.required' => 'Silakan isi alamat terlebih dahulu.',
                 'description.required' => 'Silakan isi deskripsi terlebih dahulu.',
                 'photo.required' => 'Silakan isi foto terlebih dahulu.',
                 'photo.image' => 'File harus berupa gambar.',
@@ -108,16 +99,18 @@ class ProjectController extends Controller
                 $project = new Project();
                 $project->name = $request->name;
                 $project->slug = Str::slug($request->name);
+                $project->address = $request->address;
                 $project->description = $request->description;
-                $project->price = str_replace(['Rp', ' ', '.'], '', $request->price);
+                $project->price = $request->price ? str_replace(['Rp', ' ', '.'], '', $request->price) : null;
                 $project->customer_name = $request->customer_name;
                 $project->category_id = $request->category;
 
-                $photo = $request->file('photo');
-                $photoName = time() . '_proyek_' . $photo->getClientOriginalName();
-                Storage::putFileAs('uploads/project', $photo, $photoName);
-                $project->photo = $photoName;
-
+                if ($request->hasFile('photo')) {
+                    $photo = $request->file('photo');
+                    $photoName = time() . '_proyek_' . $photo->getClientOriginalName();
+                    Storage::putFileAs('uploads/project', $photo, $photoName);
+                    $project->photo = $photoName;
+                }
                 $project->save();
 
                 return response()->json(['success' => 'Data berhasil disimpan']);
@@ -149,6 +142,7 @@ class ProjectController extends Controller
                 'price' => 'required',
                 'customer_name' => 'required',
                 'category' => 'required',
+                'address' => 'required',
                 'description' => 'required',
                 'photo' => 'mimes:jpg,png,jpeg,webp,svg|file|max:5120',
             ],
@@ -159,6 +153,7 @@ class ProjectController extends Controller
                 'price.required' => 'Silakan isi harga terlebih dahulu.',
                 'customer_name.required' => 'Silakan pilih nama pelanggan terlebih dahulu.',
                 'category.required' => 'Silakan pilih kategori terlebih dahulu.',
+                'address.required' => 'Silakan isi alamat terlebih dahulu.',
                 'description.required' => 'Silakan isi deskripsi terlebih dahulu.',
                 'photo.image' => 'File harus berupa gambar.',
                 'photo.mimes' => 'Ekstensi file harus berupa: jpg, png, jpeg, webp, atau svg.',
@@ -174,6 +169,7 @@ class ProjectController extends Controller
                 $project = Project::find($id);
                 $project->name = $request->name;
                 $project->slug = Str::slug($request->name);
+                $project->address = $request->address;
                 $project->description = $request->description;
                 $project->price = str_replace(['Rp', ' ', '.'], '', $request->price);
                 $project->customer_name = $request->customer_name;

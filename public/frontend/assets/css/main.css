@@ -8019,9 +8019,10 @@ button.slick-next {
 /* ======================= Project page Section Css End ====================== */
 /* =========================== Project Details Css Start =========================== */
 .project-details__thumb {
-    max-height: 500px;
+    max-height: 800px;
     overflow: hidden;
     border-radius: 8px;
+    background-position: center;
 }
 
 .project-details__content {

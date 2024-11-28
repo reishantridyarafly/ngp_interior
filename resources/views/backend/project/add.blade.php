@@ -52,8 +52,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-3">
-                                                    <label for="price" class="form-label">Harga <span
-                                                            class="text-danger">*</span></label>
+                                                    <label for="price" class="form-label">Harga </label>
                                                     <input type="text" id="price" name="price"
                                                         class="form-control">
                                                     <small class="text-danger errorPrice"></small>
@@ -103,6 +102,12 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Alamat <span
+                                                class="text-danger">*</span></label>
+                                        <textarea name="address" id="address" class="form-control"></textarea>
+                                        <small class="text-danger errorAddress"></small>
                                     </div>
                                     <div class="mb-3">
                                         <label for="description" class="form-label">Deskripsi <span
@@ -318,6 +323,7 @@
                 console.log(error);
             });
 
+
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -383,6 +389,14 @@
                             } else {
                                 $('#customer_name').removeClass('is-invalid');
                                 $('.errorCustomerName').html('');
+                            }
+
+                            if (response.errors.address) {
+                                $('#address').addClass('is-invalid');
+                                $('.errorAddress').html(response.errors.address);
+                            } else {
+                                $('#address').removeClass('is-invalid');
+                                $('.errorAddress').html('');
                             }
 
                             if (response.errors.description) {

@@ -109,6 +109,12 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
+                                        <label for="address" class="form-label">Alamat <span
+                                                class="text-danger">*</span></label>
+                                        <textarea name="address" id="address" class="form-control">{{ $project->address }}</textarea>
+                                        <small class="text-danger errorAddress"></small>
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="description" class="form-label">Deskripsi <span
                                                 class="text-danger">*</span></label>
                                         <textarea name="description" id="description" class="form-control">{{ $project->description }}</textarea>
@@ -387,6 +393,14 @@
                             } else {
                                 $('#customer_name').removeClass('is-invalid');
                                 $('.errorCustomerName').html('');
+                            }
+
+                            if (response.errors.address) {
+                                $('#address').addClass('is-invalid');
+                                $('.errorAddress').html(response.errors.address);
+                            } else {
+                                $('#address').removeClass('is-invalid');
+                                $('.errorAddress').html('');
                             }
 
                             if (response.errors.description) {

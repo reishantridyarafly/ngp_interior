@@ -2,7 +2,7 @@
    <footer class="footer padding-y-120 ">
        <div class="container container-two">
            <div class="row gy-5">
-               <div class="col-xl-3 col-sm-6 col-xsm-6">
+               <div class="col-xl-4 col-sm-6 col-xsm-6">
                    <div class="footer-item">
                        <div class="footer-item__logo">
                            <a href="{{ route('beranda.index') }}"> <img
@@ -32,7 +32,7 @@
                        </ul>
                    </div>
                </div>
-               <div class="col-xl-3 col-sm-6 col-xsm-6">
+               <div class="col-xl-4 col-sm-6 col-xsm-6">
                    <div class="footer-item ms-xl-5">
                        <h6 class="footer-item__title">Menu</h6>
                        <ul class="footer-menu">
@@ -48,7 +48,7 @@
                        </ul>
                    </div>
                </div>
-               <div class="col-xl-3 col-sm-6 col-xsm-6">
+               <div class="col-xl-4 col-sm-6 col-xsm-6">
                    <div class="footer-item">
                        <h6 class="footer-item__title">Layanan</h6>
                        <ul class="footer-menu">
@@ -61,43 +61,6 @@
                            <li class="footer-menu__item"><a href="#" class="footer-menu__link">Kitchen set custom
                                </a></li>
                        </ul>
-                   </div>
-               </div>
-               <div class="col-xl-3 col-sm-6 col-xsm-6">
-                   <div class="footer-item">
-                       <h6 class="footer-item__title">Our gallery</h6>
-                       <div class="gallery-list">
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery1.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery2.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery3.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery4.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery5.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                           <div class="gallery-list__item">
-                               <img src="{{ asset('frontend/assets') }}/images/thumbs/gallery6.png" alt="">
-                               <a href="https://www.instagram.com" class="gallery-list__link"><i
-                                       class="fab fa-instagram"></i></a>
-                           </div>
-                       </div>
                    </div>
                </div>
            </div>

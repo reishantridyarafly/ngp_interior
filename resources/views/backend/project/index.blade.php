@@ -52,7 +52,6 @@
                                                 <th>Kategori</th>
                                                 <th>Harga</th>
                                                 <th>Pelanggan</th>
-                                                <th>Status</th>
                                                 <th class="text-end">Aksi</th>
                                             </tr>
                                         </thead>
@@ -104,10 +103,6 @@
                     {
                         data: 'customer_name',
                         name: 'customer_name'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status'
                     },
                     {
                         data: 'action',
@@ -198,44 +193,6 @@
                     }
                 })
             })
-        });
-
-        $('body').on('change', '.select-status', function() {
-            let id = $(this).data('id');
-            let status = $(this).val();
-
-            $.ajax({
-                url: "{{ route('project.updateStatus') }}",
-                method: 'POST',
-                data: {
-                    id: id,
-                    status: status
-                },
-                success: function(response) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: "top-end",
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal
-                                .stopTimer;
-                            toast.onmouseleave = Swal
-                                .resumeTimer;
-                        }
-                    });
-                    Toast.fire({
-                        icon: "success",
-                        title: "Data berhasil disimpan."
-                    });
-                    $('#datatable').DataTable().ajax.reload();
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    console.error(xhr.status + "\n" + xhr.responseText + "\n" +
-                        thrownError);
-                }
-            });
         });
     </script>
 @endsection

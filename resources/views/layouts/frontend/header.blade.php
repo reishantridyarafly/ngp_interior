@@ -24,8 +24,9 @@
                     </li>
                     @auth
                         <li class="nav-menu__item">
-                            <a href="{{ route('profile.index') }}" class="nav-menu__link">Hi,
-                                <strong>{{ auth()->user()->first_name }}</strong></a>
+                            <a href="{{ route('profile.index') }}" class="nav-menu__link">
+                                <strong>{{ Str::limit(auth()->user()->first_name, 10, '...') }}</strong>
+                            </a>
                         </li>
                     @endauth
                 </ul>
