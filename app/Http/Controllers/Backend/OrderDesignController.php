@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderDesign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class OrderDesignController extends Controller
 {
@@ -37,32 +38,46 @@ class OrderDesignController extends Controller
 
     public function store_revision(Request $request)
     {
-        try {
-            $order = Order::find($request->id_order);
-            $order->revision = $request->revision;
+        $validated = Validator::make(
+            $request->all(),
+            [
+                'revision' => 'required|'
+            ],
+            [
+                'revision.required' => 'Revisi tidak boleh kosong.',
+            ]
+        );
 
-            if ($request->hasFile('ten_percent_payment')) {
-                $photo = $request->file('ten_percent_payment');
-                $photoName = time() . '_ten_percent_payment_' . $photo->getClientOriginalName();
-                Storage::putFileAs('uploads/ten_percent_payment', $photo, $photoName);
-                $order->ten_percent_payment = $photoName;
+        if ($validated->fails()) {
+            return response()->json(['errors' => $validated->errors()]);
+        } else {
+            try {
+                $order = Order::find($request->id_order);
+                $order->revision = $request->revision;
+
+                if ($request->hasFile('ten_percent_payment')) {
+                    $photo = $request->file('ten_percent_payment');
+                    $photoName = time() . '_ten_percent_payment_' . $photo->getClientOriginalName();
+                    Storage::putFileAs('uploads/ten_percent_payment', $photo, $photoName);
+                    $order->ten_percent_payment = $photoName;
+                }
+
+                if ($request->status_design == '') {
+                    $order->status_design = 0;
+                } else {
+                    $order->status_design = $request->status_design;
+                }
+
+                $order->save();
+
+                return response()->json(['success' => 'Data berhasil disimpan']);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Oppss, error...',
+                    'error' => $e->getMessage()
+                ], 500);
             }
-
-            if ($request->status_design == '') {
-                $order->status_design = 0;
-            } else {
-                $order->status_design = $request->status_design;
-            }
-
-            $order->save();
-
-            return response()->json(['success' => 'Data berhasil disimpan']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Oppss, error...',
-                'error' => $e->getMessage()
-            ], 500);
         }
     }
 

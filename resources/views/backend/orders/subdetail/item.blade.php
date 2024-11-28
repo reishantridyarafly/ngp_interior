@@ -204,7 +204,6 @@
                 const unitPrice = AutoNumeric.getAutoNumericElement(unitPriceInput)?.getNumericString() || 0;
                 const subtotal = volume * parseFloat(unitPrice);
 
-                // Set the subtotal value in AutoNumeric
                 const subtotalElement = AutoNumeric.getAutoNumericElement(subtotalInput);
                 if (subtotalElement) {
                     subtotalElement.set(subtotal);
@@ -225,7 +224,6 @@
                     }
                 });
 
-                // Set the subtotal
                 if (autoNumericElements.sub_total) {
                     autoNumericElements.sub_total.set(total);
                 }
@@ -256,7 +254,7 @@
             }
         });
 
-        let i = {{ $items->count() ?? 1 }};
+        let i = {{ $items->count() + 1 ?? 1 }};
         $("#add_row").click(function() {
             i++;
             const newRow = `<tr id="addr${i}">

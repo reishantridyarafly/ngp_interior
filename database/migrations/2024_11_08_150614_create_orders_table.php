@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('status_design')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_approval')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->boolean('status_production')->default(0)->comment('0 = uncompleted, 1 = completed');
-            $table->boolean('status_instalation')->default(0)->comment('0 = uncompleted, 1 = completed');
+            $table->boolean('status_installation')->default(0)->comment('0 = uncompleted, 1 = completed');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

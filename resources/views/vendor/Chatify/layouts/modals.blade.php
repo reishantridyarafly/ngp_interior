@@ -40,8 +40,7 @@
                 <div class="app-modal-body">
                     {{-- Udate profile avatar --}}
                     <div class="avatar av-l upload-avatar-preview chatify-d-flex"
-                        style="background-image: url('{{ auth()->user()->avatar == null ? asset('storage/avatar/user-avatar.png') : asset('storage/avatar/' . auth()->user()->avatar) }}');">
-                    </div>
+                        style="background-image: url('{{ Chatify::getUserWithAvatar(Auth::user())->avatar }}');"></div>
                     <p class="upload-avatar-details"></p>
                     {{-- Dark/Light Mode  --}}
                     <p class="divider"></p>

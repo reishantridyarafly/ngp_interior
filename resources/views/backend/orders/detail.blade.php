@@ -37,14 +37,14 @@
                             <!-- Tab Survei -->
                             <li class="nav-item" role="presentation">
                                 <button
-                                    class="nav-link {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    class="nav-link {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active' : '' }}"
                                     data-bs-toggle="tab" data-bs-target="#surveyTab">Survei</button>
                             </li>
 
                             <!-- Tab Desain -->
                             <li class="nav-item" role="presentation">
                                 <button
-                                    class="nav-link {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    class="nav-link {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active' : '' }}"
                                     data-bs-toggle="tab" data-bs-target="#designTab"
                                     {{ $order->status_survey == 0 ? 'disabled' : '' }}>Kebutuhan Desain</button>
                             </li>
@@ -52,7 +52,7 @@
                             <!-- Tab Persetujuan -->
                             <li class="nav-item" role="presentation">
                                 <button
-                                    class="nav-link {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    class="nav-link {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active' : '' }}"
                                     data-bs-toggle="tab" data-bs-target="#appropvalTab"
                                     {{ $order->status_design == 0 ? 'disabled' : '' }}>Persetujuan</button>
                             </li>
@@ -60,7 +60,7 @@
                             <!-- Tab Produksi -->
                             <li class="nav-item" role="presentation">
                                 <button
-                                    class="nav-link {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active' : '' }}"
+                                    class="nav-link {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_installation == 0 ? 'active' : '' }}"
                                     data-bs-toggle="tab" data-bs-target="#productionTab"
                                     {{ $order->status_approval == 0 ? 'disabled' : '' }}>Produksi</button>
                             </li>
@@ -68,8 +68,8 @@
                             <!-- Tab Instalasi -->
                             <li class="nav-item" role="presentation">
                                 <button
-                                    class="nav-link {{ $order->status_production == 1 && $order->status_instalation == 0 ? 'active' : '' }}"
-                                    data-bs-toggle="tab" data-bs-target="#instalationTab"
+                                    class="nav-link {{ $order->status_production == 1 && $order->status_installation == 0 ? 'active' : '' }}"
+                                    data-bs-toggle="tab" data-bs-target="#installationTab"
                                     {{ $order->status_production == 0 ? 'disabled' : '' }}>Instalasi</button>
                             </li>
                         </ul>
@@ -103,43 +103,28 @@
                 </div>
 
                 <div class="tab-content">
-                    <div class="tab-pane fade {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                    <div class="tab-pane fade {{ $order->status_survey == 0 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active show' : '' }}"
                         id="surveyTab">
                         @include('backend.orders.subdetail.survey')
                     </div>
 
-                    <div class="tab-pane fade {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                    <div class="tab-pane fade {{ $order->status_survey == 1 && $order->status_design == 0 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active show' : '' }}"
                         id="designTab">
                         @include('backend.orders.subdetail.design')
                     </div>
 
-                    <div class="tab-pane fade {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                    <div class="tab-pane fade {{ $order->status_design == 1 && $order->status_approval == 0 && $order->status_production == 0 && $order->status_installation == 0 ? 'active show' : '' }}"
                         id="appropvalTab">
                         @include('backend.orders.subdetail.approval')
                     </div>
-                    <div class="tab-pane fade {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_instalation == 0 ? 'active show' : '' }}"
+                    <div class="tab-pane fade {{ $order->status_approval == 1 && $order->status_production == 0 && $order->status_installation == 0 ? 'active show' : '' }}"
                         id="productionTab">
                         @include('backend.orders.subdetail.production')
                     </div>
 
-                    <div class="tab-pane fade {{ $order->status_production == 1 && $order->status_instalation == 0 ? 'active show' : '' }}"
-                        id="instalationTab">
-                        <div class="card stretch stretch-full">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center"
-                                    style="height: calc(100vh - 315px)">
-                                    <div class="text-center">
-                                        <h2 class="fs-16 fw-semibold">Instaltion</h2>
-                                        <p class="fs-12 text-muted">There is no discussions on this project</p>
-                                        <a href="javascript:void(0);"
-                                            class="avatar-text bg-soft-primary text-primary mx-auto"
-                                            data-bs-toggle="tooltip" title="Create Discussions">
-                                            <i class="feather-plus"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="tab-pane fade {{ $order->status_production == 1 && $order->status_installation == 0 ? 'active show' : '' }}"
+                        id="installationTab">
+                        @include('backend.orders.subdetail.installation')
                     </div>
                 </div>
             </div>
@@ -203,4 +188,5 @@
     @yield('script_design')
     @yield('script_approve')
     @yield('script_production')
+    @yield('script_installation')
 @endsection

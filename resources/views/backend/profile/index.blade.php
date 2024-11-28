@@ -26,7 +26,7 @@
                                 <div class="mb-4 text-center">
                                     <div class="wd-150 ht-150 mx-auto mb-3 position-relative">
                                         <div class="avatar-image wd-150 ht-150 border border-5 border-gray-3">
-                                            <img src="{{ auth()->user()->avatar == null ? asset('storage/avatar/user-avatar.png') : asset('storage/avatar/' . auth()->user()->avatar) }}"
+                                            <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}"
                                                 alt="" class="img-fluid" style="width: 200px; heigth:200px;">
                                         </div>
                                         <div class="wd-10 ht-10 text-success rounded-circle position-absolute translate-middle"

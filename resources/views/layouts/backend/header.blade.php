@@ -63,14 +63,14 @@
                 </div>
                 <div class="dropdown nxl-h-item">
                     <a href="javascript:void(0);" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside">
-                        <img src="{{ auth()->user()->avatar == null ? asset('storage/avatar/user-avatar.png') : asset('storage/avatar/' . auth()->user()->avatar) }}"
-                            alt="user-image" class="img-fluid user-avtar me-0">
+                        <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}" alt="user-image"
+                            class="img-fluid user-avtar me-0">
                     </a>
                     <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-user-dropdown">
                         <div class="dropdown-header">
                             <div class="d-flex align-items-center">
-                                <img src="{{ auth()->user()->avatar == null ? asset('storage/avatar/user-avatar.png') : asset('storage/avatar/' . auth()->user()->avatar) }}"
-                                    alt="user-image" class="img-fluid user-avtar">
+                                <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}" alt="user-image"
+                                    class="img-fluid user-avtar">
                                 <div>
                                     <h6 class="text-dark mb-0">
                                         {{ auth()->user()->first_name }}</h6>

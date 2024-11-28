@@ -126,7 +126,7 @@
                             <div>
                                 <a href="{{ route('file.initial_payment', $order->initial_payment) }}"
                                     target="_blank">
-                                    <img style="border-radius: 8px;"
+                                    <img style="border-radius: 8px; height: 500px"
                                         src="{{ route('file.initial_payment', $order->initial_payment) }}"
                                         alt="{{ $order->initial_payment }}">
                                 </a>

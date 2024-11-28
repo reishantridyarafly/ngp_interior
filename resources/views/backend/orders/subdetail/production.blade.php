@@ -2,7 +2,7 @@
     <div class="col-lg-12">
         <div class="card stretch stretch-full">
             <div class="card-header">
-                <h5 class="card-title">Persetujuan</h5>
+                <h5 class="card-title">Produksi</h5>
                 <ul>
                     <li>Produksi workshop 30-45 hari.</li>
                 </ul>
@@ -11,7 +11,7 @@
                 @if (auth()->user()->role == 'admin')
                     <div class="row mb-5">
                         <div class="col-lg-12">
-                            <label class="form-label">Upload gambar kerja (JPG, JPEG, PNG, .webp) <span
+                            <label class="form-label">Upload progres produksi (JPG, JPEG, PNG, .webp) <span
                                     class="text-danger">*</span></label>
                             <form action="{{ route('orderProduction.store_photos') }}" method="POST"
                                 enctype="multipart/form-data" class="dropzone upload-zone">
@@ -44,7 +44,7 @@
                             text-align: center;
                         }
                     </style>
-                    <label class="form-label">Gambar kerja</label>
+                    <label class="form-label">Progres pekerjaan</label>
                     @foreach ($order->production_photos as $photo)
                         <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
                             <a href="{{ route('file.production', $photo->photo_production) }}" target="_blank">

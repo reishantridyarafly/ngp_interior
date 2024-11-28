@@ -74,7 +74,9 @@
                             text-align: center;
                         }
                     </style>
-                    <label class="form-label">Gambar kerja</label>
+                    @if ($order->status_approval == 1)
+                        
+                    @endif
                     @foreach ($order->working_pictures as $photo)
                         <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
                             <a href="{{ route('file.working', $photo->photo_working) }}" target="_blank">

@@ -104,7 +104,7 @@ class OrderController extends Controller
             $order->status_design,
             $order->status_approval,
             $order->status_production,
-            $order->status_instalation,
+            $order->status_installation,
         ])->filter(function ($status) {
             return $status == 1;
         })->count();
@@ -175,17 +175,17 @@ class OrderController extends Controller
     public function destroy(Request $request)
     {
         $order = Order::findOrFail($request->id);
-        if ($order->initial_payment) {
-            $photoPath = storage_path("app/private/uploads/initial_payment/{$order->initial_payment}");
+        $surveyPhotos = $order->survey_photos;
+        foreach ($surveyPhotos as $photo) {
+            $photoPath = storage_path("app/private/uploads/survey/{$photo->photo_name}");
 
             if (file_exists($photoPath)) {
                 unlink($photoPath);
             }
         }
 
-        $surveyPhotos = $order->survey_photos;
-        foreach ($surveyPhotos as $photo) {
-            $photoPath = storage_path("app/private/uploads/survey/{$photo->photo_name}");
+        if ($order->initial_payment) {
+            $photoPath = storage_path("app/private/uploads/initial_payment/{$order->initial_payment}");
 
             if (file_exists($photoPath)) {
                 unlink($photoPath);
@@ -200,8 +200,54 @@ class OrderController extends Controller
                 unlink($photoPath);
             }
         }
+
+        if ($order->ten_percent_payment) {
+            $photoPath = storage_path("app/private/uploads/ten_percent_payment/{$order->ten_percent_payment}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        if ($order->fifty_percent_payment) {
+            $photoPath = storage_path("app/private/uploads/fifty_percent_payment/{$order->fifty_percent_payment}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        $workingPhotos = $order->working_pictures;
+        foreach ($workingPhotos as $photo) {
+            $photoPath = storage_path("app/private/uploads/working/{$photo->photo_working}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        $productionPhotos = $order->production_photos;
+        foreach ($productionPhotos as $photo) {
+            $photoPath = storage_path("app/private/uploads/production/{$photo->photo_production}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+        if ($order->last_payment) {
+            $photoPath = storage_path("app/private/uploads/last_payment/{$order->last_payment}");
+
+            if (file_exists($photoPath)) {
+                unlink($photoPath);
+            }
+        }
+
+
         $order->survey_photos()->delete();
         $order->design_photos()->delete();
+        $order->working_pictures()->delete();
+        $order->production_photos()->delete();
         $order->delete();
 
         return response()->json(['message' => 'Data berhasil dihapus']);
@@ -326,11 +372,10 @@ class OrderController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'name_section' => 'required|unique:order_sections,section_title,' . $id_section,
+                'name_section' => 'required',
             ],
             [
                 'name_section.required' => 'Silakan isi nama bagian terlebih dahulu.',
-                'name_section.unique' => 'Bagian sudah tersedia.',
             ]
         );
 

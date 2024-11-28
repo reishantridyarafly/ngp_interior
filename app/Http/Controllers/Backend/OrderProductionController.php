@@ -15,7 +15,6 @@ class OrderProductionController extends Controller
         $order = Order::find($request->id_order);
 
         if ($request->hasFile('file')) {
-
             if ($order->status_production == 0) {
                 $order->status_production = 1;
                 $order->save();

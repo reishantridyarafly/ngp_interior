@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/pemesanan/design/{id}', [App\Http\Controllers\Backend\OrderDesignController::class, 'destroy'])->name('orderDesign.destroy');
 
     Route::post('/pemesanan/persetujuan/pesanan', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'store'])->name('orderApprove.store');
+
+    Route::post('/pemesanan/installation', [App\Http\Controllers\Backend\OrderInstallationController::class, 'store'])->name('orderInstallation.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -153,5 +155,15 @@ Route::get('/file/production/{filename}', function ($filename) {
 
     abort(404);
 })->name('file.production');
+
+Route::get('/file/last_payment/{filename}', function ($filename) {
+    $path = 'uploads/last_payment/' . $filename;
+
+    if (Storage::disk('private')->exists($path)) {
+        return response()->file(storage_path('app/private/' . $path));
+    }
+
+    abort(404);
+})->name('file.last_payment');
 
 require __DIR__ . '/auth.php';
