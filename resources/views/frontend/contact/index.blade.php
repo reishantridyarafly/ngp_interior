@@ -29,9 +29,9 @@
         <div class="container container-two">
             <div class="section-heading">
                 <span class="section-heading__subtitle bg-gray-100">
-                    <span class="text-gradient fw-semibold">Contact</span>
+                    <span class="text-gradient fw-semibold">Kontak</span>
                 </span>
-                <h2 class="section-heading__title">Contact Us!</h2>
+                <h2 class="section-heading__title">Kontak kami!</h2>
             </div>
             <div class="row gy-4">
                 <div class="col-lg-4 col-sm-6">
@@ -39,31 +39,25 @@
                         <span class="contact-card__icon"><i class="fas fa-paper-plane"></i></span>
                         <h5 class="contact-card__title">Email</h5>
                         <p class="contact-card__text font-18">
-                            <a href="mailto:" class="link">michelle.rivera@example.com</a>
-                        </p>
-                        <p class="contact-card__text font-18">
-                            <a href="mailto:" class="link">michelle.rivera@example.com</a>
+                            <a href="mailto:" class="link">ngpinterior@gmail.com</a>
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <div class="contact-card">
                         <span class="contact-card__icon"><i class="fas fa-map-marker-alt"></i></span>
-                        <h5 class="contact-card__title">Location</h5>
+                        <h5 class="contact-card__title">Lokasi</h5>
                         <p class="contact-card__text font-18">
-                            8502 Preston Rd. Inglewood, Maine 98380
+                            Ruko Ciharendong, No 78, Kuningan, Jawa Barat.
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-4 col-sm-6">
                     <div class="contact-card">
                         <span class="contact-card__icon"><i class="fas fa-phone"></i></span>
-                        <h5 class="contact-card__title">Contacts </h5>
+                        <h5 class="contact-card__title">Whatsapp </h5>
                         <p class="contact-card__text font-18">
-                            <a href="mailto:" class="link"> (270) 555-0117</a>
-                        </p>
-                        <p class="contact-card__text font-18">
-                            <a href="mailto:" class="link"> (704) 555-0127 </a>
+                            <a href="http://wa.me/6281381175252" target="_blank" class="link">0813-8117-5252</a>
                         </p>
                     </div>
                 </div>

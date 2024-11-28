@@ -5,59 +5,61 @@
                <div class="col-xl-3 col-sm-6 col-xsm-6">
                    <div class="footer-item">
                        <div class="footer-item__logo">
-                           <a href="index.html"> <img src="{{ asset('frontend/assets') }}/images/logo/white-logo.png"
+                           <a href="{{ route('beranda.index') }}"> <img
+                                   src="{{ asset('backend/assets') }}/images/logo_ngp.png" width="150"
                                    alt=""></a>
                        </div>
-                       <p class="footer-item__desc">It is a long established fact that a reader will be
-                           distracted
-                       </p>
                        <ul class="social-list">
-                           <li class="social-list__item"><a href="https://www.facebook.com"
-                                   class="social-list__link flx-center"><i class="fab fa-facebook-f"></i></a>
+                           <li class="social-list__item"><a href="https://web.facebook.com/ngpnteriordesign/"
+                                   target="_blank" class="social-list__link flx-center"><i
+                                       class="fab fa-facebook-f"></i></a>
                            </li>
-                           <li class="social-list__item"><a href="https://www.twitter.com"
-                                   class="social-list__link flx-center"> <i class="fab fa-twitter"></i></a>
+                           <li class="social-list__item"><a href="https://www.instagram.com/ngp_interiordesign/"
+                                   target="_blank" class="social-list__link flx-center"> <i
+                                       class="fab fa-instagram"></i></a>
                            </li>
-                           <li class="social-list__item"><a href="https://www.linkedin.com"
-                                   class="social-list__link flx-center"> <i class="fab fa-linkedin-in"></i></a>
+                           <li class="social-list__item"><a href="https://www.tiktok.com/@ngp_interiordesign"
+                                   target="_blank" class="social-list__link flx-center"> <i
+                                       class="fab fa-tiktok"></i></a>
                            </li>
-                           <li class="social-list__item"><a href="https://www.pinterest.com"
-                                   class="social-list__link flx-center"> <i class="fab fa-instagram"></i></a>
+                           <li class="social-list__item"><a href="https://www.youtube.com/@NGPInteriorDesign"
+                                   target="_blank" class="social-list__link flx-center"> <i
+                                       class="fab fa-youtube"></i></a>
+                           </li>
+                           <li class="social-list__item"><a href="http://wa.me/6281381175252" target="_blank"
+                                   class="social-list__link flx-center"> <i class="fab fa-whatsapp"></i></a>
                            </li>
                        </ul>
                    </div>
                </div>
                <div class="col-xl-3 col-sm-6 col-xsm-6">
                    <div class="footer-item ms-xl-5">
-                       <h6 class="footer-item__title">Useful Links</h6>
+                       <h6 class="footer-item__title">Menu</h6>
                        <ul class="footer-menu">
-                           <li class="footer-menu__item"><a href="blog-classic.html" class="footer-menu__link">Blog</a>
+                           <li class="footer-menu__item"><a href="{{ route('beranda.index') }}"
+                                   class="footer-menu__link">Beranda</a>
                            </li>
-                           <li class="footer-menu__item"><a href="faq.html" class="footer-menu__link">FAQ</a>
+                           <li class="footer-menu__item"><a href="{{ route('project-ngp.index') }}"
+                                   class="footer-menu__link">Proyek</a>
                            </li>
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Property</a>
-                           </li>
-                           <li class="footer-menu__item"><a href="about.html" class="footer-menu__link">About
-                                   Us</a></li>
-                           <li class="footer-menu__item"><a href="contact.html" class="footer-menu__link">Contact</a>
+                           <li class="footer-menu__item"><a href="{{ route('contact.index') }}"
+                                   class="footer-menu__link">Kontak</a>
                            </li>
                        </ul>
                    </div>
                </div>
                <div class="col-xl-3 col-sm-6 col-xsm-6">
                    <div class="footer-item">
-                       <h6 class="footer-item__title">Services</h6>
+                       <h6 class="footer-item__title">Layanan</h6>
                        <ul class="footer-menu">
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Reliable
-                                   Rentals </a></li>
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Golden
-                                   Key Properties </a></li>
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Swift
-                                   Home Sales </a></li>
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Elite
-                                   Realty Services </a></li>
-                           <li class="footer-menu__item"><a href="property.html" class="footer-menu__link">Dream
-                                   Property Solutions </a></li>
+                           <li class="footer-menu__item"><a href="#" class="footer-menu__link">Jasa interior </a>
+                           </li>
+                           <li class="footer-menu__item"><a href="#" class="footer-menu__link">Custom furniture
+                               </a></li>
+                           <li class="footer-menu__item"><a href="#" class="footer-menu__link">Jasa eksterior </a>
+                           </li>
+                           <li class="footer-menu__item"><a href="#" class="footer-menu__link">Kitchen set custom
+                               </a></li>
                        </ul>
                    </div>
                </div>
@@ -106,7 +108,7 @@
    <div class="bottom-footer ">
        <div class="container container-two">
            <div class="bottom-footer__inner flx-between gap-3">
-               <p class="bottom-footer__text"> &copy; CityScape 2024 | All Rights Reserved.</p>
+               <p class="bottom-footer__text"> &copy; NGP Interior Design 2024 | All Rights Reserved.</p>
            </div>
        </div>
    </div>

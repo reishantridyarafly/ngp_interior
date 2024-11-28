@@ -5,8 +5,7 @@
             <!-- Logo Start -->
             <div class="logo">
                 <a href="index.html" class="link">
-                    <img src="{{ asset('frontend/assets') }}/images/logo/{{ request()->routeIs(['beranda.*']) ? 'logo.png' : 'white-logo.png' }}"
-                        alt="Logo">
+                    <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" alt="Logo" width="110">
                 </a>
             </div>
             <!-- Logo End -->
@@ -18,16 +17,7 @@
                         <a href="{{ route('beranda.index') }}" class="nav-menu__link">Beranda</a>
                     </li>
                     <li class="nav-menu__item">
-                        <a href="{{ route('about.index') }}" class="nav-menu__link">Tentang</a>
-                    </li>
-                    <li class="nav-menu__item">
                         <a href="{{ route('project-ngp.index') }}" class="nav-menu__link">Proyek</a>
-                    </li>
-                    <li class="nav-menu__item">
-                        <a href="{{ route('property.index') }}" class="nav-menu__link">Properti</a>
-                    </li>
-                    <li class="nav-menu__item">
-                        <a href="{{ route('cart.index') }}" class="nav-menu__link">Keranjang</a>
                     </li>
                     <li class="nav-menu__item">
                         <a href="{{ route('contact.index') }}" class="nav-menu__link">Kontak</a>
@@ -35,7 +25,7 @@
                     @auth
                         <li class="nav-menu__item">
                             <a href="{{ route('profile.index') }}" class="nav-menu__link">Hi,
-                                {{ auth()->user()->first_name }}</a>
+                                <strong>{{ auth()->user()->first_name }}</strong></a>
                         </li>
                     @endauth
                 </ul>
