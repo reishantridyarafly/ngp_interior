@@ -20,9 +20,7 @@ class CustomersController extends Controller
             return DataTables::of($users)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
-                    $avatarUrl = empty($data->avatar)
-                        ? asset('storage/avatar/user-avatar.png')
-                        : asset('storage/avatar/' . $data->avatar);
+                    $avatarUrl = asset('storage/avatar/' . $data->avatar);
 
                     return '
                         <a href="customers-view.html" class="hstack gap-3">

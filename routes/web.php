@@ -16,6 +16,8 @@ Route::get('/kontak', [App\Http\Controllers\Frontend\ContactController::class, '
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
 
+    Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
+
     Route::get('/profile', [App\Http\Controllers\Backend\ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/ubah/password', [App\Http\Controllers\Backend\ProfileController::class, 'changePassword'])->name('profile.changePassword');
     Route::post('/profile/pengaturan/', [App\Http\Controllers\Backend\ProfileController::class, 'settingsProfile'])->name('profile.settings');

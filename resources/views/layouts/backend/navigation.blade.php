@@ -19,6 +19,12 @@
                         <span class="nxl-mtext">Dashboard</span>
                     </a>
                 </li>
+                <li class="nxl-item {{ request()->routeIs(['consulting.*']) ? 'active' : '' }}">
+                    <a href="{{ route('consulting.index') }}" class="nxl-link">
+                        <span class="nxl-micon"><i class="feather-message-circle"></i></span>
+                        <span class="nxl-mtext">Konsultasi</span>
+                    </a>
+                </li>
                 @if (auth()->user()->role == 'admin')
                     <li class="nxl-item {{ request()->routeIs(['category.*']) ? 'active' : '' }}">
                         <a href="{{ route('category.index') }}" class="nxl-link">
