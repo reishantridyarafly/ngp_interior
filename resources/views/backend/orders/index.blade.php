@@ -128,10 +128,103 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <!-- modal -->
+    <div id="modalRating" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalRatingLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="formRating">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modalRatingLabel"></h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <input type="hidden" name="id_order" id="id_order">
+                            <label for="rating" class="form-label">Rating</label>
+                            <div id="ratingStars"></div>
+                            <input type="hidden" id="rating" name="rating">
+                            <small class="text-danger errorRating"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Komen</label>
+                            <textarea name="comment" id="comment"rows="3" class="form-control"></textarea>
+                            <small class="text-danger errorComment"></small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary" id="saveRating">Simpan</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @endsection
 
 @section('script')
+    <style>
+        .star {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+
+        .star.active {
+            color: gold;
+        }
+
+        .star.inactive {
+            color: gray;
+        }
+    </style>
+
     <script>
+        function generateStars(rating) {
+            var starsHTML = '';
+            for (var i = 1; i <= 5; i++) {
+                if (i <= Math.round(rating)) {
+                    starsHTML += '<i class="fas fa-star star active" data-rating="' + i + '"></i>';
+                } else if (i - rating <= 0.5) {
+                    starsHTML += '<i class="fas fa-star-half-alt star active" data-rating="' + (i - 0.5) + '"></i>';
+                } else {
+                    starsHTML += '<i class="far fa-star star inactive" data-rating="' + i + '"></i>';
+                }
+            }
+            return starsHTML;
+        }
+
+        var ratingStarsDiv = document.getElementById('ratingStars');
+        ratingStarsDiv.innerHTML = generateStars(0);
+        var selectedRating = 0;
+
+        ratingStarsDiv.addEventListener('click', function(event) {
+            if (event.target.classList.contains('star')) {
+                selectedRating = parseFloat(event.target.getAttribute(
+                    'data-rating'));
+                document.getElementById('rating').value =
+                    selectedRating;
+                ratingStarsDiv.innerHTML = generateStars(
+                    selectedRating);
+                event.target.classList.add('clicked');
+            }
+        });
+
+        ratingStarsDiv.addEventListener('mouseover', function(event) {
+            if (event.target.classList.contains('star')) {
+                event.target.classList.add('hovered');
+            }
+        });
+
+        ratingStarsDiv.addEventListener('mouseleave', function(event) {
+            ratingStarsDiv.innerHTML = generateStars(
+                selectedRating);
+            var stars = ratingStarsDiv.querySelectorAll('.star');
+            stars.forEach(function(star) {
+                star.classList.remove('hovered');
+            });
+        });
+
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -413,6 +506,86 @@
                     }
                 })
             })
+
+            $('body').on('click', '#btnRating', function() {
+                $('#modalRatingLabel').html("Rating Produk");
+                $('#modalRating').modal('show');
+                $('#formRating').trigger("reset");
+                selectedRating = 0;
+                ratingStarsDiv.innerHTML = generateStars(0);
+
+                $('#id_order').val($(this).data('id'));
+            });
+
+            $('#formRating').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    data: new FormData(this),
+                    url: "{{ route('rating.store') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    beforeSend: function() {
+                        $('#saveRating').attr('disable', 'disabled');
+                        $('#saveRating').text('Proses...');
+                    },
+                    complete: function() {
+                        $('#saveRating').removeAttr('disabled');
+                        $('#saveRating').text('Simpan');
+                    },
+                    success: function(response) {
+                        $('#modalRating').modal('hide');
+                        $('#formRating').trigger("reset");
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal
+                                    .stopTimer;
+                                toast.onmouseleave = Swal
+                                    .resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: response.message
+                        });
+                        $('#datatable').DataTable().ajax.reload()
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        let errorMessage = "";
+                        if (xhr.status === 0) {
+                            errorMessage =
+                                "Network error, please check your internet connection.";
+                        } else if (xhr.status >= 400 && xhr.status < 500) {
+                            errorMessage = "Client error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else if (xhr.status >= 500) {
+                            errorMessage = "Server error (" + xhr.status + "): " + xhr
+                                .responseText;
+                        } else {
+                            errorMessage = "Unexpected error: " + xhr.responseText;
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error " + xhr.status,
+                            html: `
+                            <strong>Status:</strong> ${xhr.status}<br>
+                            <strong>Error:</strong> ${thrownError}<br>
+                        `,
+                        });
+
+                        console.error(xhr.status + "\n" + xhr.responseText + "\n" +
+                            thrownError);
+                    }
+                });
+            });
         });
     </script>
 @endsection

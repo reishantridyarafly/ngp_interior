@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/pemesanan/persetujuan/pesanan', [App\Http\Controllers\Backend\OrderApprovalDesignController::class, 'store'])->name('orderApprove.store');
 
     Route::post('/pemesanan/installation', [App\Http\Controllers\Backend\OrderInstallationController::class, 'store'])->name('orderInstallation.store');
+
+    Route::post('/rating', [App\Http\Controllers\Backend\RatingController::class, 'store'])->name('rating.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

@@ -20,16 +20,14 @@ class OrderController extends Controller
     {
         if ($request->ajax()) {
             if (Auth::user()->role == 'admin') {
-                $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
+                $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date', 'status_installation']);
             } else {
-                $orders = Order::with('user')->orderBy('invoice', 'asc')->where('user_id', Auth::user()->id)->get(['id', 'invoice', 'user_id', 'location', 'order_date']);
+                $orders = Order::with('user')->orderBy('invoice', 'asc')->where('user_id', Auth::user()->id)->get(['id', 'invoice', 'user_id', 'location', 'order_date', 'status_installation']);
             }
             return DataTables::of($orders)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
-                    $avatarUrl = empty($data->user->avatar)
-                        ? asset('storage/avatar/user-avatar.png')
-                        : asset('storage/avatar/' . $data->user->avatar);
+                    $avatarUrl = asset('storage/users-avatar/' . $data->user->avatar);
 
                     return '
                         <a href="customers-view.html" class="hstack gap-3">
@@ -73,6 +71,16 @@ class OrderController extends Controller
                                             <span>Detail</span>
                                         </a>
                                     </li>';
+
+                        if ($data->status_installation == 1 && $data->ratings->isEmpty()) {
+                            $action .= '
+                                <li>
+                                    <button id="btnRating"  data-id="' . $data->id . '" class="dropdown-item">
+                                        <i class="feather feather-star me-3"></i>
+                                        <span>Rating Pesanan</span>
+                                    </button>
+                                </li>';
+                        }
                     }
                     return '
                         <div class="hstack gap-2 justify-content-end">
@@ -242,7 +250,6 @@ class OrderController extends Controller
                 unlink($photoPath);
             }
         }
-
 
         $order->survey_photos()->delete();
         $order->design_photos()->delete();
