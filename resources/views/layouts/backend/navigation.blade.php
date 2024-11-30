@@ -1,7 +1,7 @@
 <nav class="nxl-navigation">
     <div class="navbar-wrapper">
         <div class="m-header">
-            <a href="index.html" class="b-brand">
+            <a href="{{ route('beranda.index') }}" class="b-brand">
                 <!-- ========   change your logo hear   ============ -->
                 <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" style="width: 25%" alt=""
                     class="logo logo-lg">
@@ -26,6 +26,12 @@
                         <a href="{{ route('category.index') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-archive"></i></span>
                             <span class="nxl-mtext">Kategori</span>
+                        </a>
+                    </li>
+                    <li class="nxl-item {{ request()->routeIs(['bankaccount.*']) ? 'active' : '' }}">
+                        <a href="{{ route('bankaccount.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-credit-card"></i></span>
+                            <span class="nxl-mtext">Rekening</span>
                         </a>
                     </li>
                 @endif

@@ -43,7 +43,11 @@
         <!--! [Start] Header Right !-->
         <div class="header-right ms-auto">
             <div class="d-flex align-items-center">
-
+                <div class="nxl-h-item d-none d-sm-flex">
+                    <a href="{{ url('chat') }}" target="_blank" class="nxl-head-link me-0">
+                        <i class="feather-message-circle"></i>
+                    </a>
+                </div>
                 <div class="nxl-h-item d-none d-sm-flex">
                     <div class="full-screen-switcher">
                         <a href="javascript:void(0);" class="nxl-head-link me-0"
@@ -69,8 +73,8 @@
                     <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-user-dropdown">
                         <div class="dropdown-header">
                             <div class="d-flex align-items-center">
-                                <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}" alt="user-image"
-                                    class="img-fluid user-avtar">
+                                <img src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}"
+                                    alt="user-image" class="img-fluid user-avtar">
                                 <div>
                                     <h6 class="text-dark mb-0">
                                         {{ auth()->user()->first_name }}</h6>

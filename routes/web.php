@@ -1,7 +1,20 @@
 <?php
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+
+Route::get('/send-email', function () {
+    $data = [
+        'name' => 'Syahrizal As',
+        'body' => 'Testing Kirim Email di Santri Koding'
+    ];
+
+    Mail::to('sigittitiw@gmail.com')->send(new App\Mail\SendProgressEmail($data));
+
+    dd("Email Berhasil dikirim.");
+});
+
 
 Route::get('/', [App\Http\Controllers\Frontend\BerandaController::class, 'index'])->name('beranda.index');
 Route::get('/tentang', [App\Http\Controllers\Frontend\AboutController::class, 'index'])->name('about.index');
@@ -57,6 +70,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/proyek/{id}/edit', [App\Http\Controllers\Backend\ProjectController::class, 'edit'])->name('project.edit');
     Route::post('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'update'])->name('project.update');
     Route::delete('/proyek/{id}', [App\Http\Controllers\Backend\ProjectController::class, 'destroy'])->name('project.destroy');
+
+    Route::get('/rekening', [App\Http\Controllers\Backend\BankAccountController::class, 'index'])->name('bankaccount.index');
+    Route::get('/rekening/tambah', [App\Http\Controllers\Backend\BankAccountController::class, 'create'])->name('bankaccount.create');
+    Route::get('/rekening/{id}/edit', [App\Http\Controllers\Backend\BankAccountController::class, 'edit'])->name('bankaccount.edit');
+    Route::post('/rekening', [App\Http\Controllers\Backend\BankAccountController::class, 'store'])->name('bankaccount.store');
+    Route::delete('/rekening/{id}', [App\Http\Controllers\Backend\BankAccountController::class, 'destroy'])->name('bankaccount.destroy');
 
     Route::get('/kategori', [App\Http\Controllers\Backend\CategoryController::class, 'index'])->name('category.index');
     Route::get('/kategori/tambah', [App\Http\Controllers\Backend\CategoryController::class, 'create'])->name('category.create');

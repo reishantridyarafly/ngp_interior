@@ -84,6 +84,17 @@
                             Proses survei Anda telah ditolak. Silakan hubungi admin untuk informasi lebih lanjut.
                         </div>
                     @endif
+                    @if ($order->status_design == 2)
+                        <div class="alert alert-danger">
+                            Proses design Anda telah ditolak. Silakan hubungi admin untuk informasi lebih lanjut.
+                        </div>
+                    @endif
+                    @if ($order->status_approval == 2)
+                        <div class="alert alert-danger">
+                            Proses design Anda telah ditolak. Silakan hubungi admin untuk informasi lebih lanjut.
+                        </div>
+                    @endif
+
                     <div class="card stretch stretch-full">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
@@ -98,6 +109,34 @@
                                     role="progressbar" style="width: {{ $progressPercentage }}%">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="card stretch stretch-full">
+                        <div class="card-header">
+                            <h6>Rekening</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover table-bordered table-striped">
+                                <tr>
+                                    <th width="5%" class="text-center">No</th>
+                                    <th>Nama Bank</th>
+                                    <th>Nama Pemilik</th>
+                                    <th>No Rekening</th>
+                                </tr>
+                                @forelse ($bankaccounts as $bankaccount)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $bankaccount->bank_name }}</td>
+                                        <td>{{ $bankaccount->name }}</td>
+                                        <td>{{ $bankaccount->number }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">Data tidak tersedia</td>
+                                    </tr>
+                                @endforelse
+                            </table>
                         </div>
                     </div>
                 </div>

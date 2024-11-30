@@ -22,46 +22,48 @@
                         </div>
                     </div>
                 @endif
-                <div class="row">
-                    <style>
-                        .design-photo-container {
-                            display: flex;
-                            flex-direction: column;
-                            align-items: center;
-                            gap: 10px;
-                        }
+                @if (!$order->production_photos->isEmpty())
+                    <div class="row">
+                        <style>
+                            .design-photo-container {
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                gap: 10px;
+                            }
 
-                        .design-photo-container img {
-                            width: 300px;
-                            height: 200px;
-                            object-fit: cover;
-                            border-radius: 8px;
-                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                        }
+                            .design-photo-container img {
+                                width: 300px;
+                                height: 200px;
+                                object-fit: cover;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                            }
 
-                        .design-photo-container form {
-                            width: 100%;
-                            text-align: center;
-                        }
-                    </style>
-                    <label class="form-label">Progres pekerjaan</label>
-                    @foreach ($order->production_photos as $photo)
-                        <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
-                            <a href="{{ route('file.production', $photo->photo_production) }}" target="_blank">
-                                <img src="{{ route('file.production', $photo->photo_production) }}"
-                                    alt="{{ $photo->photo_production }}">
-                            </a>
-                            <p><strong>{{ \Illuminate\Support\Carbon::parse($photo->created_at)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</strong>
-                            </p>
-                            @if (auth()->user()->role == 'admin')
-                                <button type="submit" class="btn btn-danger btn-sm mt-3"
-                                    id="btnDeleteProductionPhoto" data-idproductionphoto="{{ $photo->id }}">
-                                    Hapus
-                                </button>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
+                            .design-photo-container form {
+                                width: 100%;
+                                text-align: center;
+                            }
+                        </style>
+                        <label class="form-label">Progres pekerjaan</label>
+                        @foreach ($order->production_photos as $photo)
+                            <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
+                                <a href="{{ route('file.production', $photo->photo_production) }}" target="_blank">
+                                    <img src="{{ route('file.production', $photo->photo_production) }}"
+                                        alt="{{ $photo->photo_production }}">
+                                </a>
+                                <p><strong>{{ \Illuminate\Support\Carbon::parse($photo->created_at)->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</strong>
+                                </p>
+                                @if (auth()->user()->role == 'admin')
+                                    <button type="submit" class="btn btn-danger btn-sm mt-3"
+                                        id="btnDeleteProductionPhoto" data-idproductionphoto="{{ $photo->id }}">
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>

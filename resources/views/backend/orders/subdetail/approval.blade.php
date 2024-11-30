@@ -10,34 +10,20 @@
                 </ul>
             </div>
             <div class="card-body">
-                <form id="form_approve">
-                    <div class="mb-3">
-                        <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
+                <div class="mb-3">
+                    @if ($order->fifty_percent_payment != null)
                         <label for="fifty_percent_payment" class="form-label">Bukti Pembayaran DP 50% <span
                                 class="text-danger">*</span></label>
-                        @if ($order->fifty_percent_payment == null)
-                            <input type="file" name="fifty_percent_payment" id="fifty_percent_payment"
-                                class="form-control" accept="image/*">
-                            <small class="text-danger errorFiftyPercentPayment"></small>
-                        @else
-                            <div>
-                                <a href="{{ route('file.fifty_percent_payment', $order->fifty_percent_payment) }}"
-                                    target="_blank">
-                                    <img style="border-radius: 8px; height: 500px"
-                                        src="{{ route('file.fifty_percent_payment', $order->fifty_percent_payment) }}"
-                                        alt="{{ $order->fifty_percent_payment }}">
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                    @if ($order->fifty_percent_payment == null)
-                        <div class="col-lg-12 col-md-6">
-                            <div class="form-group mb-3 d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary" id="save_approve">Simpan</button>
-                            </div>
+                        <div>
+                            <a href="{{ route('file.fifty_percent_payment', $order->fifty_percent_payment) }}"
+                                target="_blank">
+                                <img style="border-radius: 8px; height: 500px"
+                                    src="{{ route('file.fifty_percent_payment', $order->fifty_percent_payment) }}"
+                                    alt="{{ $order->fifty_percent_payment }}">
+                            </a>
                         </div>
                     @endif
-                </form>
+                </div>
                 @if (auth()->user()->role == 'admin')
                     <div class="row mb-5">
                         <div class="col-lg-12">
@@ -74,9 +60,6 @@
                             text-align: center;
                         }
                     </style>
-                    @if ($order->status_approval == 1)
-                        
-                    @endif
                     @foreach ($order->working_pictures as $photo)
                         <div class="col-lg-3 col-md-12 mb-4 design-photo-container">
                             <a href="{{ route('file.working', $photo->photo_working) }}" target="_blank">
@@ -92,19 +75,49 @@
                         </div>
                     @endforeach
                 </div>
-                <div class="mb-3">
-                    <label for="status" class="form-label">Status Persetujuan
-                    </label>
-                    <div>
-                        @if ($order->status_approval == 0)
-                            <span class="badge bg-warning text-dark">Sedang Diproses</span>
-                        @elseif ($order->status_approval == 1)
-                            <span class="badge bg-success">Telah Disetujui</span>
-                        @else
-                            <span class="badge bg-danger">Telah Ditolak</span>
+                <form id="form_approve">
+                    <div class="mb-3">
+                        <input type="hidden" name="id_order" id="id_order" value="{{ $order->id }}">
+                        @if ($order->fifty_percent_payment == null)
+                            <label for="fifty_percent_payment" class="form-label">Bukti Pembayaran DP 50% <span
+                                    class="text-danger">*</span></label>
+                            <input type="file" name="fifty_percent_payment" id="fifty_percent_payment"
+                                class="form-control" accept="image/*" required>
+                            <small class="text-danger errorFiftyPercentPayment"></small>
                         @endif
                     </div>
-                </div>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status Persetujuan
+                        </label>
+                        @if (auth()->user()->role == 'admin')
+                            <select name="status_approval" id="status_approval" class="form-control">
+                                <option value="0">- Pilih Status -</option>
+                                <option value="1" {{ $order->status_approval == '1' ? 'selected' : '' }}>Setuju
+                                </option>
+                                <option value="2" {{ $order->status_approval == '2' ? 'selected' : '' }}>Tolak
+                                </option>
+                            </select>
+                            <small class="text-danger errorInitialPayment"></small>
+                        @else
+                            <div>
+                                @if ($order->status_approval == 0)
+                                    <span class="badge bg-warning text-dark">Sedang Diproses</span>
+                                @elseif ($order->status_approval == 1)
+                                    <span class="badge bg-success">Telah Disetujui</span>
+                                @else
+                                    <span class="badge bg-danger">Telah Ditolak</span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    @if ($order->status_approval == 0)
+                        <div class="col-lg-12 col-md-6">
+                            <div class="form-group mb-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="save_approve">Simpan</button>
+                            </div>
+                        </div>
+                    @endif
+                </form>
             </div>
         </div>
     </div>

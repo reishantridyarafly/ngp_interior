@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendProgressEmail;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -49,6 +51,24 @@ class OrderInstallationController extends Controller
                     $order->status_installation = 0;
                 } else {
                     $order->status_installation = $request->status_installation;
+
+                    if ($request->status_installation == 1) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Installasi',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status installasi',
+                            'view' => 'email.progress_approve'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    } elseif ($request->status_installation == 2) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Installasi',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status installasi',
+                            'view' => 'email.progress_reject'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    }
                 }
 
                 $order->save();

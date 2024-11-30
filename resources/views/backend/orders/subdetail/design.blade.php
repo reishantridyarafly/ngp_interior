@@ -184,7 +184,7 @@
                         @endif
                     </div>
                     <div class="mb-3">
-                        <label for="revision" class="form-label">Revisi</label>
+                        <label for="revision" class="form-label">Revisi <span class="text-danger">*</span></label>
                         <textarea name="revision" id="revision" class="form-control" rows="3">{{ $order->revision }}</textarea>
                         <small class="text-danger errorRevisionText"></small>
                     </div>

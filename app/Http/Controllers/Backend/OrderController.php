@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendProgressEmail;
+use App\Models\BankAccount;
 use App\Models\Order;
 use App\Models\OrderSection;
 use App\Models\SurveyPhoto;
@@ -10,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -117,6 +120,7 @@ class OrderController extends Controller
         $order = Order::where('invoice', $invoice)->first();
         $user = User::find($order->user_id);
         $orderSections = OrderSection::where('order_id', $order->id)->orderBy('created_at', 'asc')->get();
+        $bankaccounts = BankAccount::all();
 
         $completedTasks = collect([
             $order->status_survey,
@@ -130,7 +134,7 @@ class OrderController extends Controller
 
         $totalTasks = 5;
         $progressPercentage = ($completedTasks / $totalTasks) * 100;
-        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user', 'orderSections'));
+        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user', 'orderSections', 'bankaccounts'));
     }
 
     public function edit($id)
@@ -323,6 +327,24 @@ class OrderController extends Controller
                     $order->status_survey = 0;
                 } else {
                     $order->status_survey = $request->status_survey;
+
+                    if ($request->status_survey == 1) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Survey',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status survey',
+                            'view' => 'email.progress_approve'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    } elseif ($request->status_survey == 2) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Survey',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status survey',
+                            'view' => 'email.progress_reject'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    }
                 }
 
                 $order->save();

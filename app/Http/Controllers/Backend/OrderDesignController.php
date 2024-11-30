@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendProgressEmail;
 use App\Models\Order;
 use App\Models\OrderDesign;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,7 +43,7 @@ class OrderDesignController extends Controller
         $validated = Validator::make(
             $request->all(),
             [
-                'revision' => 'required|'
+                'revision' => 'required'
             ],
             [
                 'revision.required' => 'Revisi tidak boleh kosong.',
@@ -66,6 +68,24 @@ class OrderDesignController extends Controller
                     $order->status_design = 0;
                 } else {
                     $order->status_design = $request->status_design;
+
+                    if ($request->status_design == 1) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Design',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status design',
+                            'view' => 'email.progress_approve'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    } elseif ($request->status_design == 2) {
+                        $data = [
+                            'subject' => 'Konfirmasi Pemesanan - Design',
+                            'name' => $order->user->first_name,
+                            'status_name' => 'status design',
+                            'view' => 'email.progress_reject'
+                        ];
+                        Mail::to($order->user->email)->send(new SendProgressEmail($data));
+                    }
                 }
 
                 $order->save();

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendProgressEmail;
 use App\Models\ProductionPhoto;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class OrderProductionController extends Controller
@@ -17,6 +19,15 @@ class OrderProductionController extends Controller
         if ($request->hasFile('file')) {
             if ($order->status_production == 0) {
                 $order->status_production = 1;
+
+                $data = [
+                    'subject' => 'Konfirmasi Pemesanan - Produksi',
+                    'name' => $order->user->first_name,
+                    'status_name' => 'status produksi',
+                    'view' => 'email.progress_approve'
+                ];
+
+                Mail::to($order->user->email)->send(new SendProgressEmail($data));
                 $order->save();
             }
 
