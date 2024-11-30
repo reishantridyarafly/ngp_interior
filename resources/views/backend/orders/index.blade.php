@@ -43,6 +43,33 @@
             <div class="main-content">
                 <div class="row">
                     <div class="col-lg-12">
+                        @if (auth()->user()->role == 'owner' || auth()->user()->role == 'admin')
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="form_filter">
+                                        <div class="row justify-content-between">
+                                            <div class="col-md-5 mb-3">
+                                                <input type="date" name="start_date" id="start_date" class="form-control"
+                                                    required placeholder="Tanggal Mulai">
+                                            </div>
+
+                                            <div class="col-md-5 mb-3">
+                                                <input type="date" name="end_date" id="end_date" class="form-control"
+                                                    required placeholder="Tanggal Akhir">
+                                            </div>
+
+                                            <div class="col-md-2 mb-3 d-flex align-items-center">
+                                                <button type="button" id="filter"
+                                                    class="btn btn-primary me-2">Filter</button>
+                                                <button type="submit" id="print"
+                                                    class="btn btn-secondary">Print</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="card stretch stretch-full">
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -180,6 +207,16 @@
     </style>
 
     <script>
+        $('#print').click(function(e) {
+            e.preventDefault();
+
+            var startDate = $('#start_date').val();
+            var endDate = $('#end_date').val();
+
+            window.location.href = "{{ route('order.print') }}?start_date=" + startDate + "&end_date=" +
+                endDate;
+        });
+
         function generateStars(rating) {
             var starsHTML = '';
             for (var i = 1; i <= 5; i++) {
@@ -232,38 +269,67 @@
                 }
             });
 
-            $('#datatable').DataTable({
-                processing: true,
-                serverside: true,
-                ajax: "{{ route('order.index') }}",
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
+            $(document).ready(function() {
+                var table = $('#datatable').DataTable({
+                    processing: true,
+                    serverside: true,
+                    ajax: {
+                        url: "{{ route('order.index') }}",
+                        data: function(d) {
+                            var startDate = $('#start_date').val();
+                            var endDate = $('#end_date').val();
+
+                            if (startDate && endDate) {
+                                d.start_date = startDate;
+                                d.end_date = endDate;
+                            }
+                        }
                     },
-                    {
-                        data: 'invoice',
-                        name: 'invoice'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'location',
-                        name: 'location'
-                    },
-                    {
-                        data: 'order_date',
-                        name: 'order_date'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
+                    columns: [{
+                            data: 'DT_RowIndex',
+                            name: 'DT_RowIndex',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'invoice',
+                            name: 'invoice'
+                        },
+                        {
+                            data: 'name',
+                            name: 'name'
+                        },
+                        {
+                            data: 'location',
+                            name: 'location'
+                        },
+                        {
+                            data: 'order_date',
+                            name: 'order_date'
+                        },
+                        {
+                            data: 'action',
+                            name: 'action'
+                        }
+                    ]
+                });
+
+                $('#filter').on('click', function() {
+                    var startDate = $('#start_date').val();
+                    var endDate = $('#end_date').val();
+
+                    if (startDate && endDate) {
+                        table.ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Silakan isi kedua tanggal untuk melakukan filter.",
+                        });
                     }
-                ]
+                });
             });
+
 
             $('#user_id').on('change', function() {
                 const selectedOption = $(this).find('option:selected');

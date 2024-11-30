@@ -288,7 +288,6 @@
         $(document).ready(function() {
             initializeGlobalAutoNumeric();
 
-            // Initialize AutoNumeric for each row on page load
             document.querySelectorAll('#tab_logic tbody tr').forEach(initializeRowAutoNumeric);
 
             $.ajaxSetup({

@@ -64,7 +64,7 @@ class AuthenticatedSessionController extends Controller
                 } elseif ($user->role == 'admin') {
                     return response()->json(['redirect' => route('dashboard.index')]);
                 } elseif ($user->role == 'customer') {
-                    return response()->json(['redirect' => route('dashboard.index')]);
+                    return response()->json(['redirect' => route('order.index')]);
                 }
             } else {
                 return response()->json(['WrongPassword' => ['message' => 'Kata sandi salah.']]);

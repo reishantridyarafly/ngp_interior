@@ -19,11 +19,20 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            if (Auth::user()->role == 'admin') {
-                $orders = Order::with('user')->orderBy('invoice', 'asc')->get(['id', 'invoice', 'user_id', 'location', 'order_date', 'status_installation']);
-            } else {
-                $orders = Order::with('user')->orderBy('invoice', 'asc')->where('user_id', Auth::user()->id)->get(['id', 'invoice', 'user_id', 'location', 'order_date', 'status_installation']);
+            $startDate = $request->start_date;
+            $endDate = $request->end_date;
+
+            $query = Order::with('user')->orderBy('invoice', 'asc');
+            if ($startDate && $endDate) {
+                $query->whereBetween('order_date', [$startDate, $endDate]);
             }
+
+            if (Auth::user()->role != 'admin' && Auth::user()->role != 'owner') {
+                $query->where('user_id', Auth::user()->id);
+            }
+
+            $orders = $query->get(['id', 'invoice', 'user_id', 'location', 'order_date', 'status_installation']);
+
             return DataTables::of($orders)
                 ->addIndexColumn()
                 ->addColumn('name', function ($data) {
@@ -82,6 +91,7 @@ class OrderController extends Controller
                                 </li>';
                         }
                     }
+
                     return '
                         <div class="hstack gap-2 justify-content-end">
                             <div class="dropdown">
@@ -97,6 +107,7 @@ class OrderController extends Controller
                 ->rawColumns(['name', 'status', 'action'])
                 ->make(true);
         }
+
         $users = User::where('role', 'customer')->orderBy('first_name', 'asc')->get();
         return view('backend.orders.index', compact('users'));
     }

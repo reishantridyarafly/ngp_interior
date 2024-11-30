@@ -51,7 +51,7 @@
                                         <div class="card stretch stretch-full border border-dashed border-gray-5">
                                             <div class="card-body rounded-3 text-center">
                                                 <i class="bi bi-star-fill fs-3 text-primary"></i>
-                                                <div class="fs-4 fw-bolder text-dark mt-3 mb-1">20,354</div>
+                                                <div class="fs-4 fw-bolder text-dark mt-3 mb-1">{{ $amount_rating }}</div>
                                                 <p
                                                     class="fs-12 fw-medium text-muted text-spacing-1 mb-0 text-truncate-1-line">
                                                     Total Penilaian</p>

@@ -13,18 +13,14 @@
                 <li class="nxl-item nxl-caption">
                     <label>Navigasi</label>
                 </li>
-                <li class="nxl-item {{ request()->routeIs(['dashboard.*']) ? 'active' : '' }}">
-                    <a href="{{ route('dashboard.index') }}" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-airplay"></i></span>
-                        <span class="nxl-mtext">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nxl-item {{ request()->routeIs(['consulting.*']) ? 'active' : '' }}">
-                    <a href="{{ route('consulting.index') }}" class="nxl-link">
-                        <span class="nxl-micon"><i class="feather-message-circle"></i></span>
-                        <span class="nxl-mtext">Konsultasi</span>
-                    </a>
-                </li>
+                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'owner')
+                    <li class="nxl-item {{ request()->routeIs(['dashboard.*']) ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-airplay"></i></span>
+                            <span class="nxl-mtext">Dashboard</span>
+                        </a>
+                    </li>
+                @endif
                 @if (auth()->user()->role == 'admin')
                     <li class="nxl-item {{ request()->routeIs(['category.*']) ? 'active' : '' }}">
                         <a href="{{ route('category.index') }}" class="nxl-link">
@@ -33,13 +29,20 @@
                         </a>
                     </li>
                 @endif
-
                 <li class="nxl-item {{ request()->routeIs(['order.*', 'orderItem.*']) ? 'active' : '' }}">
                     <a href="{{ route('order.index') }}" class="nxl-link">
                         <span class="nxl-micon"><i class="feather-dollar-sign"></i></span>
                         <span class="nxl-mtext">Pemesanan</span>
                     </a>
                 </li>
+                @if (auth()->user()->role == 'customer')
+                    <li class="nxl-item {{ request()->routeIs(['consulting.*']) ? 'active' : '' }}">
+                        <a href="{{ route('consulting.index') }}" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-message-circle"></i></span>
+                            <span class="nxl-mtext">Konsultasi</span>
+                        </a>
+                    </li>
+                @endif
                 @if (auth()->user()->role == 'admin')
                     <li class="nxl-item {{ request()->routeIs(['customers.*']) ? 'active' : '' }}">
                         <a href="{{ route('customers.index') }}" class="nxl-link">

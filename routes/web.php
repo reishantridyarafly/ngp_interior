@@ -12,18 +12,11 @@ Route::get('/proyek-ngp/detail/{slug}', [App\Http\Controllers\Frontend\ProjectCo
 Route::get('/kontak', [App\Http\Controllers\Frontend\ContactController::class, 'index'])->name('contact.index');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
-
-    Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
-
     Route::get('/profile', [App\Http\Controllers\Backend\ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/ubah/password', [App\Http\Controllers\Backend\ProfileController::class, 'changePassword'])->name('profile.changePassword');
     Route::post('/profile/pengaturan/', [App\Http\Controllers\Backend\ProfileController::class, 'settingsProfile'])->name('profile.settings');
     Route::post('/profile/pengaturan/hapus-foto', [App\Http\Controllers\Backend\ProfileController::class, 'deletePhoto'])->name('profile.deletePhoto');
     Route::post('/profile/hapus/akun', [App\Http\Controllers\Backend\ProfileController::class, 'deleteAccount'])->name('profile.deleteAccount');
-
-    Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
-    Route::get('/pemesanan/{invoice}/detail', [App\Http\Controllers\Backend\OrderController::class, 'detail'])->name('order.detail');
 
     Route::get('/pemesanan', [App\Http\Controllers\Backend\OrderController::class, 'index'])->name('order.index');
     Route::post('/pemesanan/tambah/pesanan', [App\Http\Controllers\Backend\OrderController::class, 'store_order'])->name('order.store_order');
@@ -86,6 +79,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/pemesanan/produksi/gambar', [App\Http\Controllers\Backend\OrderProductionController::class, 'store_photos'])->name('orderProduction.store_photos');
     Route::delete('/pemesanan/produksi/{id}', [App\Http\Controllers\Backend\OrderProductionController::class, 'destroy'])->name('orderProduction.destroy');
+});
+
+Route::middleware(['auth', 'role:owner,admin'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
+
+    Route::get('/pemesanan/cetak', [App\Http\Controllers\Print\OrderPrintController::class, 'index'])->name('order.print');
+});
+
+Route::middleware(['auth', 'role:customer'])->group(function () {
+    Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
 });
 
 Route::get('/file/survey/{filename}', function ($filename) {

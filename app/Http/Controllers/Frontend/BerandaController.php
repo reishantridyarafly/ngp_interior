@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\Rating;
-use Illuminate\Http\Request;
 
 class BerandaController extends Controller
 {

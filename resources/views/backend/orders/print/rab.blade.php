@@ -157,7 +157,7 @@
                 <tr>
                     <td>Tanggal</td>
                     <td>:</td>
-                    <td class="value">{{ \Carbon\Carbon::now()->format('d F Y') }}</td>
+                    <td class="value">{{ \Carbon\Carbon::parse($order->order_date)->format('d F Y') }}</td>
                 </tr>
                 <tr>
                     <td>Nama Pelanggan</td>
