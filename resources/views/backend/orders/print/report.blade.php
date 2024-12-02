@@ -161,19 +161,20 @@
                         {{ $order->sections->sum('total_amount') ? number_format($order->sections->sum('total_amount'), 0, ',', '.') : 0 }}
                     </td>
                 </tr>
-                <tr class="subtotal-row">
-                    <td colspan="5" style="text-align: right;">Total Keseluruhan</td>
-                    <td class="number-column">
-                        {{ $total ? number_format($total, 0, ',', '.') : 0 }}
-                    </td>
-                </tr>
             @empty
                 <tr>
                     <th colspan="6" style="text-align: center">Data tidak tersedia</th>
                 </tr>
             @endforelse
+            <tr class="subtotal-row">
+                <td colspan="5" style="text-align: right;">Total Keseluruhan</td>
+                <td class="number-column">
+                    {{ $total ? number_format($total, 0, ',', '.') : 0 }}
+                </td>
+            </tr>
         </table>
     </div>
 </body>
 
 </html>
+

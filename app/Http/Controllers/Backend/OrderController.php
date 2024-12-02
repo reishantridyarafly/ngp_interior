@@ -120,7 +120,6 @@ class OrderController extends Controller
         $order = Order::where('invoice', $invoice)->first();
         $user = User::find($order->user_id);
         $orderSections = OrderSection::where('order_id', $order->id)->orderBy('created_at', 'asc')->get();
-        $bankaccounts = BankAccount::all();
 
         $completedTasks = collect([
             $order->status_survey,
@@ -134,7 +133,7 @@ class OrderController extends Controller
 
         $totalTasks = 5;
         $progressPercentage = ($completedTasks / $totalTasks) * 100;
-        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user', 'orderSections', 'bankaccounts'));
+        return view('backend.orders.detail', compact('order', 'completedTasks', 'progressPercentage', 'user', 'orderSections'));
     }
 
     public function edit($id)
