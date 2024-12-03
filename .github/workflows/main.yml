@@ -1,30 +1,68 @@
 name: Deploy Laravel Project on push
+
 on:
   push:
     branches:
       - main
+
 jobs:
   web-deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout the latest code from the repository
       - name: Get the latest code
-        uses: actions/checkout@v2.3.2
-      - uses: actions/setup-node@master
+        uses: actions/checkout@v3
+
+      # Step 2: Install PHP 8.2
+      - name: Install PHP 8.2
+        run: |
+          sudo apt update
+          sudo apt install -y php8.2 php8.2-cli php8.2-fpm php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip php8.2-bcmath php8.2-sqlite3
+
+      # Step 3: Set up Node.js (required for some Laravel features like Vite or Mix)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+
+      # Step 4: Copy .env if not present
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      # Step 5: Install Composer dependencies
       - name: Install Dependencies
-        run: composer update --ignore-platform-reqs
+        run: composer install --no-interaction --prefer-dist
+
+      # Step 6: Generate Laravel application key
       - name: Generate key
         run: php artisan key:generate
+
+      # Step 7: Generate storage link
       - name: Generate storage link
         run: php artisan storage:link
+
+      # Step 8: Set directory permissions for storage and cache
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
+
+      # Step 9: Run migrations (if using a database, ensure database is set up)
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      # Step 10: Sync files to the server via FTP
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /
+          server-dir: /path/to/your/server/directory
+
+      # Step 11: Cache Composer dependencies for faster subsequent builds
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
