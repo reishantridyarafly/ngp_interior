@@ -11,7 +11,7 @@
                                 <div class="d-flex align-items-center">
                                     <img class="rounded-circle" alt="{{ auth()->user()->name }}" id="photoPreview"
                                         style="width: 100px; height: 100px; margin-right: 15px"
-                                        src="{{ auth()->user()->avatar == null ? asset('storage/avatar/user-avatar.png') : asset('storage/avatar/' . auth()->user()->avatar) }}">
+                                        src="{{ asset('storage/users-avatar/' . auth()->user()->avatar) }}">
                                     <button type="button" class="btn btn-danger btn-sm mt-1" id="deletePhoto">Hapus
                                         Foto</button>
                                 </div>
