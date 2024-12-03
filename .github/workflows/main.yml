@@ -61,7 +61,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /path/to/your/server/directory
+          server-dir: /
 
       # Step 12: Cache Composer dependencies for faster subsequent builds
       - name: Cache Composer Dependencies
