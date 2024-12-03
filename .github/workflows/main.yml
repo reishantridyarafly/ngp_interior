@@ -15,9 +15,10 @@ jobs:
       - name: Get the latest code
         uses: actions/checkout@v3
 
-      # Step 2: Install PHP 8.2
-      - name: Install PHP 8.2
+      # Step 2: Add PPA repository for PHP 8.2
+      - name: Add PHP 8.2 PPA and install PHP 8.2
         run: |
+          sudo add-apt-repository ppa:ondrej/php -y
           sudo apt update
           sudo apt install -y php8.2 php8.2-cli php8.2-fpm php8.2-mbstring php8.2-xml php8.2-curl php8.2-zip php8.2-bcmath php8.2-sqlite3
 
