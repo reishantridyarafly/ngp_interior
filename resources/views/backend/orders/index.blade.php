@@ -70,7 +70,7 @@
                             </div>
                         @endif
 
-                        <div class="card stretch stretch-full">
+                        <div class="card">
                             <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-hover" id="datatable">
