@@ -128,7 +128,7 @@
 
 <body>
     <div class="header clearfix">
-        <img src="{{ public_path('backend/assets/images/LOGO_NGP.png') }}" alt="NGP Interior Logo" class="logo">
+        <img src="{{ public_path('backend/assets/images/logo_ngp.png') }}" alt="NGP Interior Logo" class="logo">
         <div class="company-info">
             <p style="font-weight: bold;">NGP INTERIOR</p>
             <p>Interior & General Contractor</p>
