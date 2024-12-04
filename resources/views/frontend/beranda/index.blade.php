@@ -45,7 +45,7 @@
                 <div class="col-lg-6">
                     <div class="about-three-thumb">
                         <div class="about-three-thumb__inner">
-                            <img src="{{ asset('frontend/assets') }}/images/thumbs/about-three-img.png" alt="">
+                            <img src="{{ asset('frontend/assets') }}/images/thumbs/about.jpg" alt="">
                             <div class="project-content">
                                 <div class="project-content__inner">
                                     <h2 class="project-content__number">800+</h2>
