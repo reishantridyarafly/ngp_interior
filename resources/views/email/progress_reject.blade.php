@@ -90,7 +90,7 @@
                 terkait masalah ini.</p>
             <p>Jika Anda memiliki pertanyaan atau membutuhkan informasi tambahan, jangan ragu untuk menghubungi kami
                 melalui tombol di bawah ini.</p>
-            <a href="http://wa.me/6281381175252" class="btn" style="color: white;">Hubungi Kami</a>
+            <a href="{{ route('consulting.index') }}" class="btn" style="color: white;">Hubungi Kami</a>
         </div>
 
         <!-- Footer Section -->
