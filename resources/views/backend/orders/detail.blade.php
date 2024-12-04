@@ -15,22 +15,10 @@
                         <li class="breadcrumb-item">@yield('title')</li>
                     </ul>
                 </div>
-                <div class="page-header-right ms-auto">
-                    <div class="d-md-none d-flex align-items-center">
-                        <a href="javascript:void(0)" class="page-header-right-open-toggle">
-                            <i class="feather-align-right fs-20"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
             <!-- [ page-header ] end -->
 
             <div class="bg-white py-3 border-bottom rounded-0 p-md-0 mb-0">
-                <div class="d-md-none d-flex align-items-center justify-content-between">
-                    <a href="javascript:void(0)" class="page-content-left-open-toggle">
-                        <i class="feather-align-left fs-20"></i>
-                    </a>
-                </div>
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="nav-tabs-wrapper page-content-left-sidebar-wrapper">
                         <ul class="nav nav-tabs nav-tabs-custom-style" id="myTab" role="tablist">
