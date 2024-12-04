@@ -59,6 +59,9 @@
                         <p class="contact-card__text font-18">
                             <a href="http://wa.me/6281381175252" target="_blank" class="link">0813-8117-5252</a>
                         </p>
+                        <p class="contact-card__text font-18">
+                            <a href="{{ route('consulting.index') }}" target="_blank" class="link">Konsultasi</a>
+                        </p>
                     </div>
                 </div>
             </div>

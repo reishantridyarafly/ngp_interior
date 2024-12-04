@@ -3,7 +3,7 @@
         <div class="m-header">
             <a href="{{ route('beranda.index') }}" class="b-brand">
                 <!-- ========   change your logo hear   ============ -->
-                <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" style="width: 25%" alt=""
+                <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" style="width: 40%" alt=""
                     class="logo logo-lg">
                 <img src="{{ asset('backend/assets') }}/images/logo_ngp.png" alt="" class="logo logo-sm">
             </a>

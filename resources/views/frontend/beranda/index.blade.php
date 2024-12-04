@@ -70,7 +70,8 @@
                                 konsisten dan profesional.</p>
                         </div>
                         <div class="about-button">
-                            <a href="#" class="btn btn-outline-main bg-white">Hubungi Kami <span class="icon-right">
+                            <a href="{{ route('contact.index') }}" class="btn btn-outline-main bg-white">Hubungi Kami
+                                <span class="icon-right">
                                     <i class="fas fa-arrow-right"></i> </span> </a>
                         </div>
                     </div>
@@ -230,7 +231,8 @@
                                         </div>
                                         <ul class="star-rating flx-align justify-content-end">
                                             @for ($i = 1; $i <= 5; $i++)
-                                                <li class="star-rating__item {{ $i <= $rating->rating ? '' : 'unabled' }}">
+                                                <li
+                                                    class="star-rating__item {{ $i <= $rating->rating ? '' : 'unabled' }}">
                                                     <i class="fas fa-star"></i>
                                                 </li>
                                             @endfor

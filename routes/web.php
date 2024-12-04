@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/pemesanan/installation', [App\Http\Controllers\Backend\OrderInstallationController::class, 'store'])->name('orderInstallation.store');
 
     Route::post('/rating', [App\Http\Controllers\Backend\RatingController::class, 'store'])->name('rating.store');
+
+    Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -104,10 +106,6 @@ Route::middleware(['auth', 'role:owner,admin'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard.index');
 
     Route::get('/pemesanan/cetak', [App\Http\Controllers\Print\OrderPrintController::class, 'index'])->name('order.print');
-});
-
-Route::middleware(['auth', 'role:customer'])->group(function () {
-    Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
 });
 
 Route::get('/file/survey/{filename}', function ($filename) {
