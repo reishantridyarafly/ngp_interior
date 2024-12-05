@@ -16,14 +16,14 @@
         <!--! [Start] Header Right !-->
         <div class="header-right ms-auto">
             <div class="d-flex align-items-center">
-                <div class="nxl-h-item d-none d-sm-flex">
+                <div class="nxl-h-item d-sm-flex">
                     <a href="{{ url('chat') }}" target="_blank" class="nxl-head-link me-0">
                         <i class="feather-message-circle">
                             <span id="unread-message-badge" class="badge bg-success nxl-h-badge">0</span>
                         </i>
                     </a>
                 </div>
-                <div class="nxl-h-item d-none d-sm-flex">
+                <div class="nxl-h-item d-sm-flex">
                     <div class="full-screen-switcher">
                         <a href="javascript:void(0);" class="nxl-head-link me-0"
                             onclick="$('body').fullScreenHelper('toggle');">
