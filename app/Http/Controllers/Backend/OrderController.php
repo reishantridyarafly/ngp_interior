@@ -42,7 +42,7 @@ class OrderController extends Controller
                     $avatarUrl = asset('storage/users-avatar/' . $data->user->avatar);
 
                     return '
-                        <a href="customers-view.html" class="hstack gap-3">
+                        <a href="' . url('chat/' . $data->id) . '" class="hstack gap-3">
                             <div class="avatar-image avatar-md">
                                 <img src="' . $avatarUrl . '" alt="" class="img-fluid">
                             </div>
