@@ -66,6 +66,22 @@
 
     @include('layouts.backend.footer')
     @yield('script')
+
+    <script>
+        function fetchUnreadMessages() {
+            $.ajax({
+                url: '{{ route('unread.messages') }}',
+                method: 'GET',
+                success: function(data) {
+                    $('#unread-message-badge').text(data.unreadMessages);
+                },
+                error: function() {
+                    console.log("Error fetching unread messages.");
+                }
+            });
+        }
+        fetchUnreadMessages();
+    </script>
 </body>
 
 </html>

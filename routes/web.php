@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/rating', [App\Http\Controllers\Backend\RatingController::class, 'store'])->name('rating.store');
 
     Route::get('/konsultasi', [App\Http\Controllers\Backend\ConsultingController::class, 'index'])->name('consulting.index');
+
+    Route::get('/unread-messages', [App\Http\Controllers\Backend\MessageController::class, 'getUnreadMessages'])->name('unread.messages');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
