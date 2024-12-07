@@ -25,7 +25,7 @@ class ProjectController extends Controller
                     return $data->category->name;
                 })
                 ->addColumn('price', function ($data) {
-                    return 'Ro ' . number_format($data->price, 0, ',', '.');
+                    return 'Rp ' . number_format($data->price, 0, ',', '.');
                 })
                 ->addColumn('action', function ($data) {
                     return '
